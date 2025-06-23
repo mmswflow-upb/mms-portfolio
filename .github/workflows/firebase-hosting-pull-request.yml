@@ -20,3 +20,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MMS_PORTFOLIO }}
           projectId: mms-portfolio
+          entryPoint: mms-portfolio-app

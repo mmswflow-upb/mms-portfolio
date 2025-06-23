@@ -19,3 +19,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MMS_PORTFOLIO }}
           channelId: live
           projectId: mms-portfolio
+          entryPoint: mms-portfolio-app
