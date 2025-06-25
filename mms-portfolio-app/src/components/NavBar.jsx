@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import editCodeIcon from "../assets/info/edit-code.png";
 import logoutIcon from "../assets/buttons/log-out.png";
 
-const NavBar = () => {
+const NavBar = ({ isEditMode = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, logout } = useAuth();
@@ -65,68 +66,80 @@ const NavBar = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6">
-            {navItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={(e) => handleNavClick(e, item.path)}
-                className={`text-nebula-mint hover:text-stellar-blue transition-colors duration-300 text-sm ${
-                  location.pathname === item.path ? "text-stellar-blue" : ""
-                }`}
-              >
-                {item.name}
-              </button>
-            ))}
-            {user && (
-              <div className="flex items-center space-x-4 ml-4">
-                <Link
-                  to="/admin"
-                  className="btn-primary flex items-center gap-2 text-sm"
+          {/* Desktop Navigation - Hidden in Edit Mode */}
+          {!isEditMode && (
+            <div className="hidden lg:flex items-center space-x-6">
+              {navItems.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={(e) => handleNavClick(e, item.path)}
+                  className={`text-nebula-mint hover:text-stellar-blue transition-colors duration-300 text-sm ${
+                    location.pathname === item.path ? "text-stellar-blue" : ""
+                  }`}
                 >
-                  Admin
-                </Link>
+                  {item.name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Edit Mode Indicator and Logout - Right Side */}
+          {isEditMode && (
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg px-3 py-1">
+                <img
+                  src={editCodeIcon}
+                  alt="Edit Mode"
+                  className="h-4 w-4 object-contain logo-nebula-mint"
+                />
+                <span className="text-nebula-mint text-sm font-medium">
+                  Edit Mode
+                </span>
+              </div>
+              {user && (
                 <button
                   onClick={handleLogout}
-                  className="btn-secondary flex items-center gap-2 text-sm"
+                  className="text-nebula-mint hover:text-stellar-blue transition-colors duration-300 flex items-center space-x-2"
                 >
                   <img
                     src={logoutIcon}
                     alt="Logout"
-                    className="h-4 w-4 object-contain"
+                    className="h-4 w-4 object-contain logo-nebula-mint"
                   />
-                  Logout
+                  <span>Logout</span>
                 </button>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
-          {/* Mobile menu button */}
-          <div className="lg:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-nebula-mint hover:text-stellar-blue transition-colors duration-300"
-            >
-              <span className="sr-only">Toggle menu</span>
-              <svg
-                className="h-7 w-7"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+          {/* Mobile menu button - Hidden in Edit Mode */}
+          {!isEditMode && (
+            <div className="lg:hidden">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-nebula-mint hover:text-stellar-blue transition-colors duration-300"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
+                <span className="sr-only">Toggle menu</span>
+                <svg
+                  className="h-7 w-7"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Mobile Navigation */}
-        {isOpen && (
+        {/* Mobile Navigation - Hidden in Edit Mode */}
+        {!isEditMode && isOpen && (
           <div className="lg:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-cosmic-purple/10 border-t border-cosmic-purple/30 max-h-96 overflow-y-auto">
               {navItems.map((item) => (
@@ -140,28 +153,6 @@ const NavBar = () => {
                   {item.name}
                 </button>
               ))}
-              {user && (
-                <div className="space-y-2 pt-4 border-t border-cosmic-purple/30">
-                  <Link
-                    to="/admin"
-                    className="block px-3 py-2 btn-primary text-center flex items-center gap-2 justify-center"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Admin
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full px-3 py-2 btn-secondary text-center flex items-center gap-2 justify-center"
-                  >
-                    <img
-                      src={logoutIcon}
-                      alt="Logout"
-                      className="h-5 w-5 object-contain"
-                    />
-                    Logout
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         )}

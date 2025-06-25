@@ -1,0 +1,582 @@
+import { useState, useRef } from "react";
+import { useData } from "../../contexts/DataContext";
+import projectIcon from "../../assets/info/project.png";
+import AdminSectionWrapper from "./AdminSectionWrapper";
+import editIcon from "../../assets/buttons/edit.png";
+import plusIcon from "../../assets/buttons/plus.png";
+import deleteIcon from "../../assets/buttons/delete.png";
+import uploadIcon from "../../assets/buttons/upload.png";
+import PopupModal from "../PopupModal";
+import {
+  uploadProjectImage,
+  deleteProjectImage,
+} from "../../services/projectsService";
+
+const AdminProjects = () => {
+  const { data, updateData, addItem, removeItem } = useData();
+  const { projects } = data;
+  const [editingId, setEditingId] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    technologies: "",
+    image: "",
+    githubUrl: "",
+    liveUrl: "",
+    imageFileName: "",
+  });
+  const [tempFile, setTempFile] = useState(null);
+  const [tempPreview, setTempPreview] = useState(null);
+  const fileInputRef = useRef(null);
+  const originalDataRef = useRef({});
+
+  const icon = (
+    <img
+      src={projectIcon}
+      alt="Projects"
+      className="h-8 w-8 object-contain logo-nebula-mint"
+    />
+  );
+
+  const handleEdit = (project) => {
+    setEditingId(project.id);
+    setFormData({
+      title: project.title || "",
+      description: project.description || "",
+      technologies: (project.technologies || []).join(", "),
+      image: project.image || "",
+      githubUrl: project.githubUrl || "",
+      liveUrl: project.liveUrl || "",
+      imageFileName: project.imageFileName || "",
+    });
+    originalDataRef.current = {
+      title: project.title || "",
+      description: project.description || "",
+      technologies: (project.technologies || []).join(", "),
+      image: project.image || "",
+      githubUrl: project.githubUrl || "",
+      liveUrl: project.liveUrl || "",
+      imageFileName: project.imageFileName || "",
+    };
+  };
+
+  const handleAdd = () => {
+    setIsAdding(true);
+    setFormData({
+      title: "",
+      description: "",
+      technologies: "",
+      image: "",
+      githubUrl: "",
+      liveUrl: "",
+      imageFileName: "",
+    });
+    originalDataRef.current = {
+      title: "",
+      description: "",
+      technologies: "",
+      image: "",
+      githubUrl: "",
+      liveUrl: "",
+      imageFileName: "",
+    };
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file (JPEG, PNG, GIF, etc.)");
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size must be less than 5MB");
+        return;
+      }
+      setTempFile(file);
+      const previewURL = URL.createObjectURL(file);
+      setTempPreview(previewURL);
+      setFormData((prev) => ({
+        ...prev,
+        image: previewURL,
+      }));
+    }
+  };
+
+  const handlePaste = (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith("image/")) {
+        const file = items[i].getAsFile();
+        if (file) {
+          if (file.size > 5 * 1024 * 1024) {
+            alert("File size must be less than 5MB");
+            return;
+          }
+          setTempFile(file);
+          const previewURL = URL.createObjectURL(file);
+          setTempPreview(previewURL);
+          setFormData((prev) => ({
+            ...prev,
+            image: previewURL,
+          }));
+          break;
+        }
+      }
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    // If we're editing an existing project and it has an image, delete it from storage
+    if (editingId && formData.imageFileName) {
+      try {
+        await deleteProjectImage(formData.imageFileName);
+      } catch (error) {
+        console.error("Error deleting image from storage:", error);
+        // Continue with the deletion even if storage deletion fails
+      }
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      image: "",
+      imageFileName: "",
+    }));
+    setTempFile(null);
+    if (tempPreview) {
+      URL.revokeObjectURL(tempPreview);
+    }
+    setTempPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleSave = async () => {
+    let imageUrl = formData.image;
+    let imageFileName = formData.imageFileName;
+
+    if (tempFile) {
+      try {
+        const oldImageFileName = editingId ? formData.imageFileName : null;
+
+        const result = await uploadProjectImage(tempFile, oldImageFileName);
+        imageUrl = result.downloadURL;
+        imageFileName = result.fileName;
+      } catch (uploadError) {
+        alert("Error uploading image. Please try again.");
+        return;
+      }
+    }
+
+    const newProject = {
+      ...formData,
+      image: imageUrl,
+      imageFileName: imageFileName,
+      technologies: formData.technologies
+        .split(",")
+        .map((tech) => tech.trim())
+        .filter((tech) => tech),
+    };
+
+    try {
+      if (editingId) {
+        await updateData("projects", newProject, editingId);
+      } else {
+        await addItem("projects", newProject);
+      }
+      setTempFile(null);
+      setTempPreview(null);
+      handleCancel();
+    } catch (error) {
+      console.error("Error saving project:", error);
+      alert("Error saving project. Please try again.");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this project?")) {
+      try {
+        // Find the project to get its imageFileName
+        const projectToDelete = projects.find((project) => project.id === id);
+
+        // Delete the image from storage if it exists
+        if (projectToDelete?.imageFileName) {
+          try {
+            await deleteProjectImage(projectToDelete.imageFileName);
+          } catch (error) {
+            console.error("Error deleting project image from storage:", error);
+            // Continue with project deletion even if image deletion fails
+          }
+        }
+
+        // Delete the project from the database
+        await removeItem("projects", id);
+      } catch (error) {
+        console.error("Error deleting project:", error);
+        alert("Error deleting project. Please try again.");
+      }
+    }
+  };
+
+  const handleCancel = () => {
+    if (tempPreview) {
+      URL.revokeObjectURL(tempPreview);
+    }
+    setTempFile(null);
+    setTempPreview(null);
+    setFormData({
+      title: "",
+      description: "",
+      technologies: "",
+      image: "",
+      githubUrl: "",
+      liveUrl: "",
+      imageFileName: "",
+    });
+    originalDataRef.current = {
+      title: "",
+      description: "",
+      technologies: "",
+      image: "",
+      githubUrl: "",
+      liveUrl: "",
+      imageFileName: "",
+    };
+    setIsAdding(false);
+    setEditingId(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleUndo = () => {
+    setFormData({ ...originalDataRef.current });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const formatDateRange = (startDate, endDate) => {
+    if (!startDate) return "";
+
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
+    };
+
+    const start = formatDate(startDate);
+    const end = endDate ? formatDate(endDate) : "Present";
+
+    return `${start} - ${end}`;
+  };
+
+  return (
+    <AdminSectionWrapper
+      id="admin-projects"
+      title="Manage Projects"
+      icon={icon}
+      description="Add, edit, or remove portfolio projects."
+    >
+      <div className="space-y-6">
+        {/* Add New Project Button */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleAdd}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <img
+              src={plusIcon}
+              alt="Add"
+              className="h-4 w-4 object-contain logo-nebula-mint"
+            />
+            <span>Add Project</span>
+          </button>
+        </div>
+
+        {/* Add/Edit Form in PopupModal */}
+        {isAdding || editingId ? (
+          <PopupModal
+            isOpen={isAdding || editingId}
+            onClose={handleCancel}
+            title={editingId ? "Edit Project" : "Add New Project"}
+          >
+            <div className="space-y-4">
+              {/* Image Upload Section */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Project Screenshot / Image
+                </label>
+                <div className="space-y-3">
+                  <div
+                    className="border-2 border-dashed border-cosmic-purple/30 rounded-lg p-4 hover:border-stellar-blue/50 transition-colors"
+                    onPaste={handlePaste}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const files = e.dataTransfer.files;
+                      if (files.length > 0) {
+                        const file = files[0];
+                        if (!file.type.startsWith("image/")) {
+                          alert(
+                            "Please select an image file (JPEG, PNG, GIF, etc.)"
+                          );
+                          return;
+                        }
+                        if (file.size > 5 * 1024 * 1024) {
+                          alert("File size must be less than 5MB");
+                          return;
+                        }
+                        setTempFile(file);
+                        const previewURL = URL.createObjectURL(file);
+                        setTempPreview(previewURL);
+                        setFormData((prev) => ({
+                          ...prev,
+                          image: previewURL,
+                        }));
+                      }
+                    }}
+                  >
+                    <div className="flex items-center justify-center space-x-3">
+                      <label className="btn-secondary cursor-pointer flex items-center space-x-2">
+                        <img
+                          src={uploadIcon}
+                          alt="Upload"
+                          className="h-4 w-4 object-contain logo-nebula-mint"
+                        />
+                        <span>Upload Image</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                          ref={fileInputRef}
+                        />
+                      </label>
+                      <span className="text-nebula-mint/60 text-sm">or</span>
+                      <span className="text-nebula-mint/40 text-sm">
+                        Paste (Ctrl+V) / Drag & Drop
+                      </span>
+                      {formData.image && (
+                        <button
+                          type="button"
+                          className="btn-secondary text-xs px-2 py-1"
+                          onClick={handleDeleteImage}
+                        >
+                          Delete Image
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-nebula-mint/40 text-xs text-center mt-2">
+                      Max 5MB
+                    </p>
+                  </div>
+                  {formData.image && (
+                    <div className="mt-2">
+                      <p className="text-nebula-mint/60 text-sm mb-2">
+                        Preview:
+                      </p>
+                      <img
+                        src={tempPreview || formData.image}
+                        alt="Project Preview"
+                        className="w-24 h-24 object-cover rounded-lg border border-cosmic-purple/30"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Project Information */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-nebula-mint text-sm font-medium mb-2">
+                    Project Title
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                    placeholder="e.g., Space Explorer"
+                  />
+                </div>
+              </div>
+
+              {/* URLs */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-nebula-mint text-sm font-medium mb-2">
+                    GitHub URL
+                  </label>
+                  <input
+                    type="url"
+                    name="githubUrl"
+                    value={formData.githubUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                    placeholder="e.g., https://github.com/username/project"
+                  />
+                </div>
+                <div>
+                  <label className="block text-nebula-mint text-sm font-medium mb-2">
+                    Live Demo URL
+                  </label>
+                  <input
+                    type="url"
+                    name="liveUrl"
+                    value={formData.liveUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                    placeholder="e.g., https://project-demo.com"
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows={5}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="Describe your project, features, challenges, and outcomes..."
+                />
+              </div>
+
+              {/* Technologies */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Technologies (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  name="technologies"
+                  value={formData.technologies}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="e.g., React, Three.js, Node.js, MongoDB, AWS"
+                />
+              </div>
+
+              <div className="flex space-x-3">
+                <button onClick={handleSave} className="btn-primary">
+                  {editingId ? "Update" : "Add"} Project
+                </button>
+                <button onClick={handleCancel} className="btn-secondary">
+                  Cancel
+                </button>
+                <button onClick={handleUndo} className="btn-secondary">
+                  Undo
+                </button>
+              </div>
+            </div>
+          </PopupModal>
+        ) : null}
+
+        {/* Projects List */}
+        <div className="space-y-4">
+          {projects.length === 0 && (
+            <div className="text-nebula-mint/60 text-center py-8">
+              No Projects found
+            </div>
+          )}
+          {projects.map((project) => (
+            <div key={project.id} className="card">
+              <div className="flex justify-between items-start">
+                <div className="flex-1 min-w-0">
+                  {/* Show image if present */}
+                  {project.image && (
+                    <img
+                      src={project.image}
+                      alt="Project"
+                      className="w-16 h-16 object-cover rounded-lg border border-cosmic-purple/30 mb-2"
+                    />
+                  )}
+                  <h3 className="text-xl font-bold text-nebula-mint">
+                    {project.title}
+                  </h3>
+                  <p className="text-nebula-mint/80 mt-2">
+                    {project.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {(project.technologies || []).map((tech, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  {(project.githubUrl || project.liveUrl) && (
+                    <div className="flex gap-2 mt-2">
+                      {project.githubUrl && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-stellar-blue hover:text-nebula-mint text-sm"
+                        >
+                          GitHub
+                        </a>
+                      )}
+                      {project.liveUrl && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-stellar-blue hover:text-nebula-mint text-sm"
+                        >
+                          Live Demo
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="flex space-x-2 ml-4">
+                  <button
+                    onClick={() => handleEdit(project)}
+                    className="btn-edit"
+                  >
+                    <img
+                      src={editIcon}
+                      alt="Edit"
+                      className="h-4 w-4 object-contain logo-nebula-mint"
+                    />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(project.id)}
+                    className="btn-secondary text-xs bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30 px-2 py-1 flex items-center space-x-1"
+                  >
+                    <img
+                      src={deleteIcon}
+                      alt="Delete"
+                      className="h-3 w-3 object-contain logo-nebula-mint"
+                    />
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </AdminSectionWrapper>
+  );
+};
+
+export default AdminProjects;

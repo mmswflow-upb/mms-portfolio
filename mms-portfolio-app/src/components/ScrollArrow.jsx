@@ -37,9 +37,33 @@ const ScrollArrow = ({
         aria-label={`Scroll to ${sectionId} section`}
       >
         {isUpward ? (
-          <ChevronUp className="h-8 w-8" />
+          <svg
+            className="h-8 w-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 15l7-7 7 7"
+            />
+          </svg>
         ) : (
-          <ChevronDown className="h-8 w-8" />
+          <svg
+            className="h-8 w-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
         )}
       </button>
     </div>

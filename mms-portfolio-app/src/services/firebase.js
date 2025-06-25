@@ -13,6 +13,6 @@ const firebaseConfig = {
   measurementId: "G-198RBQ33RP",
 };
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = getFirestore(app, "mms-portfolio");
 export const storage = getStorage(app);
 export const auth = getAuth(app);
