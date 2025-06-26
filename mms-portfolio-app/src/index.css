@@ -22,6 +22,11 @@
     padding-top: 0;
   }
 
+  /* Add scroll margin for all sections to account for navbar */
+  section[id] {
+    scroll-margin-top: 84px; /* navbar height (64px) + 20px padding */
+  }
+
   /* Prevent scrolling above the personal section */
   #personal {
     scroll-margin-top: 0;

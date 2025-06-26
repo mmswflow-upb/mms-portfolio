@@ -40,9 +40,16 @@ const NavBar = ({ isEditMode = false }) => {
     const targetElement = document.getElementById(targetId);
 
     if (targetElement) {
-      targetElement.scrollIntoView({
+      // Get navbar height (64px = h-16)
+      const navbarHeight = 64;
+
+      // Calculate the position to scroll to
+      const elementTop = targetElement.offsetTop;
+      const offsetPosition = elementTop - navbarHeight - 20; // 20px additional padding
+
+      window.scrollTo({
+        top: offsetPosition,
         behavior: "smooth",
-        block: "start",
       });
     }
 

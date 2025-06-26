@@ -49,6 +49,22 @@ const PersonalSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Personal Info */}
           <div className="space-y-6">
+            {/* Profile Photo - Mobile First */}
+            {personal.photo && (
+              <div className="lg:hidden flex justify-center mb-6">
+                <div className="relative">
+                  <img
+                    src={personal.photo}
+                    alt={personal.preferredName || personal.name || "Profile"}
+                    className="w-32 h-32 rounded-full object-cover border-4 border-cosmic-purple/30 shadow-lg"
+                  />
+                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-stellar-blue rounded-full border-2 border-deep-space flex items-center justify-center">
+                    <div className="w-4 h-4 bg-nebula-mint rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-4">
               <h1 className="text-4xl md:text-6xl font-bold">
                 <span className="text-nebula-mint">Hi, I'm </span>
@@ -79,22 +95,75 @@ const PersonalSection = () => {
             </div>
           </div>
 
-          {/* Right side - Code Sample */}
-          <div className="card p-6">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-nebula-mint/60 text-sm ml-2">
-                  developer.json
-                </span>
+          {/* Right side - Profile Photo (Desktop) and Code Sample */}
+          <div className="space-y-6">
+            {/* GitHub-style commit/info card */}
+            <div className="w-full bg-deep-space border border-cosmic-purple/30 rounded-xl p-4 flex items-center gap-4 shadow-md mb-4">
+              <img
+                src={personal.photo}
+                alt={personal.preferredName || personal.name || "Profile"}
+                className="w-32 h-32 rounded-full object-cover border-2 border-cosmic-purple/40 shadow"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-semibold text-nebula-mint">
+                    {personal.preferredName || personal.name || "You"}
+                  </span>
+                  <span className="text-xs text-nebula-mint/60">
+                    {(() => {
+                      // Show 'x hours ago' if within 24h, else show date
+                      const date = personal.lastEditDate
+                        ? new Date(personal.lastEditDate)
+                        : new Date();
+                      const now = new Date();
+                      const diffMs = now - date;
+                      const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+                      if (diffHrs < 24) {
+                        return `${
+                          diffHrs === 0
+                            ? "Just now"
+                            : diffHrs +
+                              " hour" +
+                              (diffHrs > 1 ? "s" : "") +
+                              " ago"
+                        }`;
+                      } else {
+                        return date.toLocaleString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        });
+                      }
+                    })()}
+                  </span>
+                  <span className="text-xs text-nebula-mint/40 italic">
+                    (Portfolio v1.0)
+                  </span>
+                </div>
+                <div className="text-nebula-mint/80 truncate text-sm mt-1">
+                  {personal.commitMessage ||
+                    "Almost finished building portfolio components"}
+                </div>
               </div>
+            </div>
 
-              <pre className="text-sm text-nebula-mint overflow-x-auto whitespace-pre-wrap">
-                <code>
-                  {personal.codeSample ||
-                    `{
+            {/* Code Sample */}
+            <div className="card p-6">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-nebula-mint/60 text-sm ml-2">
+                    developer.json
+                  </span>
+                </div>
+                <pre className="text-sm text-nebula-mint overflow-x-auto whitespace-pre-wrap">
+                  <code>
+                    {personal.codeSample ||
+                      `{
   "name": "${personal.fullName || personal.name || "Developer"}",
   "role": "${personal.role || "Full Stack Developer"}",
   "location": "${personal.location || "Location"}",
@@ -103,8 +172,9 @@ const PersonalSection = () => {
   ],
   "passion": "${personal.passion || "Building the future"}"
 }`}
-                </code>
-              </pre>
+                  </code>
+                </pre>
+              </div>
             </div>
           </div>
         </div>
