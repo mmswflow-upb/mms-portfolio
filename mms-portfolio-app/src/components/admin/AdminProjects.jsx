@@ -511,16 +511,23 @@ const AdminProjects = () => {
                   <p className="text-nebula-mint/80 mt-2">
                     {project.description}
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {(project.technologies || []).map((tech, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
-                      >
-                        {tech}
+                  {(project.technologies || []).length > 0 && (
+                    <div className="mt-2">
+                      <span className="text-nebula-mint/60 text-sm font-semibold mr-2">
+                        Tech Stack:
                       </span>
-                    ))}
-                  </div>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {(project.technologies || []).map((tech, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {(project.githubUrl || project.liveUrl) && (
                     <div className="flex gap-2 mt-2">
                       {project.githubUrl && (

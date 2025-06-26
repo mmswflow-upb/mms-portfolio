@@ -38,6 +38,7 @@ const EducationSection = () => {
         description="My academic journey and educational achievements that have laid the foundation for my career."
         nextSectionId="projects"
         prevSectionId="organizations"
+        showArrow={false}
       >
         <div className="space-y-6">
           {education.map((edu) => (

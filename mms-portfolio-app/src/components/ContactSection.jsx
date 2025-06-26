@@ -8,7 +8,28 @@ import SectionWrapper from "./SectionWrapper";
 
 const ContactSection = () => {
   const { data } = useData();
-  const { contact } = data;
+  const { personal } = data;
+
+  // Safety check for personal data
+  if (!personal || !personal.contact) {
+    return (
+      <SectionWrapper
+        id="contact"
+        title="Contact"
+        icon={icon}
+        description="Get in touch with me"
+        prevSectionId="certificates"
+      >
+        <div className="text-center py-8">
+          <p className="text-nebula-mint/60">
+            Contact information not available.
+          </p>
+        </div>
+      </SectionWrapper>
+    );
+  }
+
+  const { contact } = personal;
 
   const icon = (
     <img src={contactLogo} alt="Contact" className="h-8 w-8 object-contain" />
@@ -77,13 +98,14 @@ const ContactSection = () => {
   return (
     <SectionWrapper
       id="contact"
-      title={contact.title}
+      title={contact.title || "Contact"}
       icon={icon}
-      description={contact.subtitle}
+      description={contact.subtitle || "Get in touch with me"}
       prevSectionId="certificates"
+      showArrow={false}
     >
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {contact.methods.map((method) => (
+        {(contact.methods || []).map((method) => (
           <a
             key={method.id}
             href={getLink(method)}

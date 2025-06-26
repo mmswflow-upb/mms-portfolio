@@ -9,6 +9,7 @@ import AdminSectionWrapper from "./AdminSectionWrapper";
 import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
 import deleteIcon from "../../assets/buttons/delete.png";
+import PopupModal from "../PopupModal";
 
 const AdminContact = () => {
   const { data, updateData, isLoading } = useData();
@@ -18,6 +19,10 @@ const AdminContact = () => {
   const [formData, setFormData] = useState({
     type: "",
     value: "",
+  });
+  const [headerFormData, setHeaderFormData] = useState({
+    title: "",
+    subtitle: "",
   });
 
   const icon = (
@@ -132,22 +137,20 @@ const AdminContact = () => {
 
   const handleContactInfoChange = (e) => {
     const { name, value } = e.target;
-    // Update local state immediately for responsive UI
-    const updatedPersonal = {
-      ...data.personal,
-      contact: {
-        ...data.personal?.contact,
-        [name]: value,
-      },
-    };
-    // Update context without saving to Firebase yet
-    updateData("personal", updatedPersonal);
+    setHeaderFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleContactInfoSave = async () => {
     try {
-      // Data is already updated in context, just need to save to Firebase
-      await updateData("personal", data.personal);
+      const updatedPersonal = {
+        ...data.personal,
+        contact: {
+          ...data.personal?.contact,
+          title: headerFormData.title,
+          subtitle: headerFormData.subtitle,
+        },
+      };
+      await updateData("personal", updatedPersonal);
       setIsEditingHeader(false);
     } catch (error) {
       console.error("Error updating contact info:", error);
@@ -156,11 +159,18 @@ const AdminContact = () => {
   };
 
   const handleContactHeaderEdit = () => {
+    setHeaderFormData({
+      title: data.personal?.contact?.title || "",
+      subtitle: data.personal?.contact?.subtitle || "",
+    });
     setIsEditingHeader(true);
   };
 
   const handleContactHeaderCancel = () => {
-    // Reset to original data from context
+    setHeaderFormData({
+      title: data.personal?.contact?.title || "",
+      subtitle: data.personal?.contact?.subtitle || "",
+    });
     setIsEditingHeader(false);
   };
 
@@ -237,7 +247,7 @@ const AdminContact = () => {
                 <input
                   type="text"
                   name="title"
-                  value={contact.title || ""}
+                  value={headerFormData.title}
                   onChange={handleContactInfoChange}
                   className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
                   placeholder="e.g., Let's Connect"
@@ -249,7 +259,7 @@ const AdminContact = () => {
                 </label>
                 <textarea
                   name="subtitle"
-                  value={contact.subtitle || ""}
+                  value={headerFormData.subtitle}
                   onChange={handleContactInfoChange}
                   rows={3}
                   className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
@@ -292,15 +302,18 @@ const AdminContact = () => {
             </div>
           </div>
 
-          {/* Add/Edit Form */}
+          {/* Add/Edit Form in PopupModal */}
           {(isAdding || editingId) && (
-            <div className="card">
-              <h3 className="text-xl font-bold text-nebula-mint mb-4">
-                {editingId ? "Edit Contact Method" : "Add New Contact Method"}
-              </h3>
+            <PopupModal
+              isOpen={isAdding || editingId}
+              onClose={handleCancel}
+              title={
+                editingId ? "Edit Contact Method" : "Add New Contact Method"
+              }
+            >
               <div className="space-y-4">
                 {/* Contact Method Information - Grouped Small Fields */}
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-nebula-mint text-sm font-medium mb-2">
                       Type
@@ -371,7 +384,7 @@ const AdminContact = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </PopupModal>
           )}
 
           {/* Contact Methods List */}

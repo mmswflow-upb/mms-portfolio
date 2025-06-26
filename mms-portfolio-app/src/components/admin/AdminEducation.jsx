@@ -576,7 +576,7 @@ const AdminEducation = () => {
               {/* Subjects */}
               <div>
                 <label className="block text-nebula-mint text-sm font-medium mb-2">
-                  Relevant Subjects (comma-separated)
+                  Preferred Subjects (comma-separated)
                 </label>
                 <input
                   type="text"
@@ -584,7 +584,7 @@ const AdminEducation = () => {
                   value={formData.subjects}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
-                  placeholder="e.g., Data Structures, Algorithms, Database Systems, Web Development, Machine Learning"
+                  placeholder="e.g., Algorithms, Databases, AI"
                 />
               </div>
 

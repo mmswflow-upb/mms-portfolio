@@ -38,6 +38,7 @@ const CertificatesSection = () => {
         description="Professional certifications and achievements that validate my expertise and commitment to continuous learning."
         nextSectionId="contact"
         prevSectionId="projects"
+        showArrow={false}
       >
         <div className="grid md:grid-cols-2 gap-6">
           {certificates.map((cert) => (

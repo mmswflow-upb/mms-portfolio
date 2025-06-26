@@ -21,6 +21,7 @@ const AdminCertificates = () => {
     title: "",
     issuer: "",
     description: "",
+    skills: "",
     image: "",
     credentialId: "",
     credentialUrl: "",
@@ -45,6 +46,7 @@ const AdminCertificates = () => {
       title: cert.title || "",
       issuer: cert.issuer || "",
       description: cert.description || "",
+      skills: (cert.skills || []).join(", "),
       image: cert.image || "",
       credentialId: cert.credentialId || "",
       credentialUrl: cert.credentialUrl || "",
@@ -54,6 +56,7 @@ const AdminCertificates = () => {
       title: cert.title || "",
       issuer: cert.issuer || "",
       description: cert.description || "",
+      skills: (cert.skills || []).join(", "),
       image: cert.image || "",
       credentialId: cert.credentialId || "",
       credentialUrl: cert.credentialUrl || "",
@@ -67,6 +70,7 @@ const AdminCertificates = () => {
       title: "",
       issuer: "",
       description: "",
+      skills: "",
       image: "",
       credentialId: "",
       credentialUrl: "",
@@ -76,6 +80,7 @@ const AdminCertificates = () => {
       title: "",
       issuer: "",
       description: "",
+      skills: "",
       image: "",
       credentialId: "",
       credentialUrl: "",
@@ -176,6 +181,10 @@ const AdminCertificates = () => {
       ...formData,
       image: imageUrl,
       imageFileName: imageFileName,
+      skills: formData.skills
+        .split(",")
+        .map((skill) => skill.trim())
+        .filter((skill) => skill),
     };
 
     try {
@@ -231,6 +240,7 @@ const AdminCertificates = () => {
       title: "",
       issuer: "",
       description: "",
+      skills: "",
       image: "",
       credentialId: "",
       credentialUrl: "",
@@ -240,6 +250,7 @@ const AdminCertificates = () => {
       title: "",
       issuer: "",
       description: "",
+      skills: "",
       image: "",
       credentialId: "",
       credentialUrl: "",
@@ -460,6 +471,21 @@ const AdminCertificates = () => {
                 />
               </div>
 
+              {/* Skills */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Skills (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="e.g., AWS, Cloud Architecture, Security, Networking"
+                />
+              </div>
+
               <div className="flex space-x-3">
                 <button onClick={handleSave} className="btn-primary">
                   {editingId ? "Update" : "Add"} Certificate
@@ -503,7 +529,28 @@ const AdminCertificates = () => {
                       ID: {cert.credentialId}
                     </p>
                   )}
-                  <p className="text-nebula-mint/80 mt-2">{cert.description}</p>
+                  {/* Display skills if available, otherwise show description */}
+                  {(cert.skills || []).length > 0 ? (
+                    <div className="mt-2">
+                      <span className="text-nebula-mint/60 text-sm font-semibold mr-2">
+                        Skills:
+                      </span>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {cert.skills.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-stellar-blue/20 border border-stellar-blue/30 rounded-full text-stellar-blue text-sm"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-nebula-mint/80 mt-2">
+                      {cert.description}
+                    </p>
+                  )}
                   {cert.credentialUrl && (
                     <a
                       href={cert.credentialUrl}

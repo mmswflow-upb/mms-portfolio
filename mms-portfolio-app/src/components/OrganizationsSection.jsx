@@ -38,6 +38,7 @@ const OrganizationsSection = () => {
         description="My involvement in various organizations and communities that have shaped my professional growth."
         nextSectionId="education"
         prevSectionId="experience"
+        showArrow={false}
       >
         <div className="grid md:grid-cols-2 gap-6">
           {organizations.map((org) => (

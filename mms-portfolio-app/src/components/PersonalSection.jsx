@@ -7,6 +7,24 @@ const PersonalSection = () => {
   const { data } = useData();
   const { personal } = data;
 
+  // Safety check for personal data
+  if (!personal) {
+    return (
+      <section
+        id="personal"
+        className="min-h-screen flex flex-col justify-center relative"
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center">
+            <p className="text-nebula-mint/60">
+              Loading personal information...
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   useEffect(() => {
     // Prevent scrolling above the personal section
     const handleScroll = () => {
@@ -34,24 +52,30 @@ const PersonalSection = () => {
             <div className="space-y-4">
               <h1 className="text-4xl md:text-6xl font-bold">
                 <span className="text-nebula-mint">Hi, I'm </span>
-                <span className="gradient-text">{personal.name}</span>
+                <span className="gradient-text">
+                  {personal.preferredName || personal.name || "Developer"}
+                </span>
               </h1>
               <p className="text-lg text-nebula-mint/80 max-w-lg">
-                {personal.description}
+                {personal.description ||
+                  "Full-stack developer passionate about creating innovative solutions."}
               </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              {personal.languages.map((lang, index) => (
-                <LabelCard key={index} label={lang} onClick={() => {}} />
-              ))}
+              <LabelCard
+                label={personal.role || "Full Stack Developer"}
+                onClick={() => {}}
+              />
             </div>
 
             <div className="flex items-center space-x-4">
               <span className="text-nebula-mint/60">
-                📍 {personal.location}
+                📍 {personal.location || "Location"}
               </span>
-              <span className="text-nebula-mint/60">🚀 {personal.passion}</span>
+              <span className="text-nebula-mint/60">
+                🚀 {personal.passion || "Building the future"}
+              </span>
             </div>
           </div>
 
@@ -68,15 +92,18 @@ const PersonalSection = () => {
               </div>
 
               <pre className="text-sm text-nebula-mint overflow-x-auto whitespace-pre-wrap">
-                <code>{`{
-  "name": "${personal.name}",
-  "role": "${personal.role}",
-  "location": "${personal.location}",
+                <code>
+                  {personal.codeSample ||
+                    `{
+  "name": "${personal.fullName || personal.name || "Developer"}",
+  "role": "${personal.role || "Full Stack Developer"}",
+  "location": "${personal.location || "Location"}",
   "languages": [
-    ${personal.languages.map((lang) => `"${lang}"`).join(",\n    ")}
+    ${(personal.languages || []).map((lang) => `"${lang}"`).join(",\n    ")}
   ],
-  "passion": "${personal.passion}"
-}`}</code>
+  "passion": "${personal.passion || "Building the future"}"
+}`}
+                </code>
               </pre>
             </div>
           </div>

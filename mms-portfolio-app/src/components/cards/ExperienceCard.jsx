@@ -10,12 +10,28 @@ const ExperienceCard = ({ experience, onClick, className = "" }) => {
       <div className="card hover:bg-cosmic-purple/20 hover:border-cosmic-purple/50 transition-all duration-300">
         <div className="flex items-start space-x-4">
           <div className="flex-shrink-0">
-            <div className="p-3 bg-stellar-blue/20 rounded-lg group-hover:bg-stellar-blue/30 transition-all duration-300">
-              <img
-                src={briefcaseLogo}
-                alt="Experience"
-                className="h-6 w-6 object-contain logo-nebula-mint"
-              />
+            <div className="w-16 h-16 rounded-lg overflow-hidden">
+              {experience.image ? (
+                <img
+                  src={experience.image}
+                  alt={experience.company}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.nextSibling.style.display = "flex";
+                  }}
+                />
+              ) : null}
+              <div
+                className="w-full h-full bg-stellar-blue/20 flex items-center justify-center group-hover:bg-stellar-blue/30 transition-all duration-300"
+                style={{ display: experience.image ? "none" : "flex" }}
+              >
+                <img
+                  src={briefcaseLogo}
+                  alt="Experience"
+                  className="h-6 w-6 object-contain logo-nebula-mint"
+                />
+              </div>
             </div>
           </div>
 
