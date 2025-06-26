@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
 import { useData } from "../../contexts/DataContext";
 import projectIcon from "../../assets/info/project.png";
+import teamIcon from "../../assets/info/team.png";
+import personIcon from "../../assets/info/person.png";
 import AdminSectionWrapper from "./AdminSectionWrapper";
 import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
@@ -20,6 +22,8 @@ const AdminProjects = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    role: "",
+    teamType: "single", // "single" or "team"
     technologies: "",
     image: "",
     githubUrl: "",
@@ -44,6 +48,8 @@ const AdminProjects = () => {
     setFormData({
       title: project.title || "",
       description: project.description || "",
+      role: project.role || "",
+      teamType: project.teamType || "single",
       technologies: (project.technologies || []).join(", "),
       image: project.image || "",
       githubUrl: project.githubUrl || "",
@@ -53,6 +59,8 @@ const AdminProjects = () => {
     originalDataRef.current = {
       title: project.title || "",
       description: project.description || "",
+      role: project.role || "",
+      teamType: project.teamType || "single",
       technologies: (project.technologies || []).join(", "),
       image: project.image || "",
       githubUrl: project.githubUrl || "",
@@ -66,6 +74,8 @@ const AdminProjects = () => {
     setFormData({
       title: "",
       description: "",
+      role: "",
+      teamType: "single",
       technologies: "",
       image: "",
       githubUrl: "",
@@ -75,6 +85,8 @@ const AdminProjects = () => {
     originalDataRef.current = {
       title: "",
       description: "",
+      role: "",
+      teamType: "single",
       technologies: "",
       image: "",
       githubUrl: "",
@@ -231,6 +243,8 @@ const AdminProjects = () => {
     setFormData({
       title: "",
       description: "",
+      role: "",
+      teamType: "single",
       technologies: "",
       image: "",
       githubUrl: "",
@@ -240,6 +254,8 @@ const AdminProjects = () => {
     originalDataRef.current = {
       title: "",
       description: "",
+      role: "",
+      teamType: "single",
       technologies: "",
       image: "",
       githubUrl: "",
@@ -409,6 +425,50 @@ const AdminProjects = () => {
                     placeholder="e.g., Space Explorer"
                   />
                 </div>
+                <div>
+                  <label className="block text-nebula-mint text-sm font-medium mb-2">
+                    Role
+                  </label>
+                  <input
+                    type="text"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                    placeholder="e.g., Full Stack Developer, Frontend Lead"
+                  />
+                </div>
+              </div>
+
+              {/* Team Type Selection */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Project Type
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="teamType"
+                      value="single"
+                      checked={formData.teamType === "single"}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 text-stellar-blue bg-cosmic-purple/20 border-cosmic-purple/30 focus:ring-stellar-blue focus:ring-2"
+                    />
+                    <span className="text-nebula-mint">Individual Project</span>
+                  </label>
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="teamType"
+                      value="team"
+                      checked={formData.teamType === "team"}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 text-stellar-blue bg-cosmic-purple/20 border-cosmic-purple/30 focus:ring-stellar-blue focus:ring-2"
+                    />
+                    <span className="text-nebula-mint">Team Project</span>
+                  </label>
+                </div>
               </div>
 
               {/* URLs */}
@@ -508,6 +568,37 @@ const AdminProjects = () => {
                   <h3 className="text-xl font-bold text-nebula-mint">
                     {project.title}
                   </h3>
+                  <div className="flex items-center gap-3 mt-1">
+                    {project.role && (
+                      <p className="text-stellar-blue text-sm font-medium">
+                        {project.role}
+                      </p>
+                    )}
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
+                        project.teamType === "team"
+                          ? "bg-stellar-blue/20 border border-stellar-blue/30 text-stellar-blue"
+                          : "bg-stellar-blue/20 border border-stellar-blue/30 text-stellar-blue"
+                      }`}
+                    >
+                      {project.teamType === "team" ? (
+                        <img
+                          src={teamIcon}
+                          alt="Team"
+                          className="h-3 w-3 object-contain logo-nebula-mint"
+                        />
+                      ) : (
+                        <img
+                          src={personIcon}
+                          alt="Individual"
+                          className="h-3 w-3 object-contain logo-nebula-mint"
+                        />
+                      )}
+                      {project.teamType === "team"
+                        ? "Team Project"
+                        : "Individual"}
+                    </span>
+                  </div>
                   <p className="text-nebula-mint/80 mt-2">
                     {project.description}
                   </p>

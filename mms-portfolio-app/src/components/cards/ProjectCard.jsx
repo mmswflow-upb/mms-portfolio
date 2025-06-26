@@ -2,6 +2,8 @@ import { useState } from "react";
 import codeLogo from "../../assets/info/code.png";
 import githubLogo from "../../assets/info/github.png";
 import liveLogo from "../../assets/info/pulse.png";
+import teamIcon from "../../assets/info/team.png";
+import personIcon from "../../assets/info/person.png";
 
 const ProjectCard = ({ project, onClick, className = "" }) => {
   return (
@@ -42,6 +44,35 @@ const ProjectCard = ({ project, onClick, className = "" }) => {
               <h3 className="text-xl font-bold text-nebula-mint group-hover:text-stellar-blue transition-colors duration-300">
                 {project.title}
               </h3>
+              <div className="flex items-center gap-3 mt-1">
+                {project.role && (
+                  <p className="text-stellar-blue text-sm font-medium">
+                    {project.role}
+                  </p>
+                )}
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
+                    project.teamType === "team"
+                      ? "bg-stellar-blue/20 border border-stellar-blue/30 text-stellar-blue"
+                      : "bg-stellar-blue/20 border border-stellar-blue/30 text-stellar-blue"
+                  }`}
+                >
+                  {project.teamType === "team" ? (
+                    <img
+                      src={teamIcon}
+                      alt="Team"
+                      className="h-3 w-3 object-contain logo-nebula-mint"
+                    />
+                  ) : (
+                    <img
+                      src={personIcon}
+                      alt="Individual"
+                      className="h-3 w-3 object-contain logo-nebula-mint"
+                    />
+                  )}
+                  {project.teamType === "team" ? "Team Project" : "Individual"}
+                </span>
+              </div>
             </div>
 
             <p className="text-nebula-mint/80 leading-relaxed line-clamp-3">
