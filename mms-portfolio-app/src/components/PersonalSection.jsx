@@ -1,11 +1,36 @@
 import { useData } from "../contexts/DataContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ScrollArrow from "./ScrollArrow";
 import LabelCard from "./cards/LabelCard";
+import { fetchCommitInfo } from "../services/gitHubApiService";
 
 const PersonalSection = () => {
   const { data } = useData();
   const { personal } = data;
+  const [commitInfo, setCommitInfo] = useState(null);
+  const [isLoadingCommit, setIsLoadingCommit] = useState(false);
+
+  // Fetch commit information when repository path changes
+  useEffect(() => {
+    const fetchCommit = async () => {
+      if (personal?.repositoryPath) {
+        setIsLoadingCommit(true);
+        try {
+          const info = await fetchCommitInfo(personal.repositoryPath);
+          setCommitInfo(info);
+        } catch (error) {
+          console.error("Error fetching commit info:", error);
+          setCommitInfo(null);
+        } finally {
+          setIsLoadingCommit(false);
+        }
+      } else {
+        setCommitInfo(null);
+      }
+    };
+
+    fetchCommit();
+  }, [personal?.repositoryPath]);
 
   // Safety check for personal data
   if (!personal) {
@@ -102,7 +127,7 @@ const PersonalSection = () => {
               <img
                 src={personal.photo}
                 alt={personal.preferredName || personal.name || "Profile"}
-                className="w-32 h-32 rounded-full object-cover border-2 border-cosmic-purple/40 shadow"
+                className="w-24 h-24 rounded-full object-cover border-2 border-cosmic-purple/40 shadow"
               />
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -111,13 +136,17 @@ const PersonalSection = () => {
                   </span>
                   <span className="text-xs text-nebula-mint/60">
                     {(() => {
-                      // Show 'x hours ago' if within 24h, else show date
-                      const date = personal.lastEditDate
-                        ? new Date(personal.lastEditDate)
+                      // Use commit date if available, otherwise show current date
+                      const date = commitInfo?.date
+                        ? new Date(commitInfo.date)
                         : new Date();
                       const now = new Date();
                       const diffMs = now - date;
                       const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+                      const diffDays = Math.floor(
+                        diffMs / (1000 * 60 * 60 * 24)
+                      );
+
                       if (diffHrs < 24) {
                         return `${
                           diffHrs === 0
@@ -127,6 +156,8 @@ const PersonalSection = () => {
                               (diffHrs > 1 ? "s" : "") +
                               " ago"
                         }`;
+                      } else if (diffDays < 7) {
+                        return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
                       } else {
                         return date.toLocaleString("en-US", {
                           month: "long",
@@ -143,8 +174,25 @@ const PersonalSection = () => {
                   </span>
                 </div>
                 <div className="text-nebula-mint/80 truncate text-sm mt-1">
-                  {personal.commitMessage ||
-                    "Almost finished building portfolio components"}
+                  {isLoadingCommit ? (
+                    "Loading commit info..."
+                  ) : commitInfo ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-stellar-blue font-mono text-xs">
+                        {commitInfo.sha}
+                      </span>
+                      <a
+                        href={commitInfo.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-stellar-blue transition-colors"
+                      >
+                        {commitInfo.message}
+                      </a>
+                    </div>
+                  ) : (
+                    "Almost finished building portfolio components"
+                  )}
                 </div>
               </div>
             </div>
@@ -162,6 +210,23 @@ const PersonalSection = () => {
                 </div>
                 <pre className="text-sm text-nebula-mint overflow-x-auto whitespace-pre-wrap">
                   <code>
+                    {/* GitHub-style comment */}
+                    <span className="text-nebula-mint/60">
+                      // Last edited by{" "}
+                      {personal.preferredName || personal.name || "Developer"}
+                    </span>
+                    <span className="text-nebula-mint/60">
+                      //{" "}
+                      {new Date().toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                    <span className="text-nebula-mint/60">
+                      // Portfolio v1.0
+                    </span>
+                    <br />
                     {personal.codeSample ||
                       `{
   "name": "${personal.fullName || personal.name || "Developer"}",

@@ -3,6 +3,8 @@ import { useData } from "../../contexts/DataContext";
 import projectIcon from "../../assets/info/project.png";
 import teamIcon from "../../assets/info/team.png";
 import personIcon from "../../assets/info/person.png";
+import githubIcon from "../../assets/info/github.png";
+import liveIcon from "../../assets/info/pulse.png";
 import AdminSectionWrapper from "./AdminSectionWrapper";
 import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
@@ -13,12 +15,15 @@ import {
   uploadProjectImage,
   deleteProjectImage,
 } from "../../services/projectsService";
+import Pagination from "./Pagination";
 
 const AdminProjects = () => {
   const { data, updateData, addItem, removeItem } = useData();
   const { projects } = data;
   const [editingId, setEditingId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -28,6 +33,7 @@ const AdminProjects = () => {
     image: "",
     githubUrl: "",
     liveUrl: "",
+    category: "Web", // "Web", "Embedded", "Games", "App Dev"
     imageFileName: "",
   });
   const [tempFile, setTempFile] = useState(null);
@@ -54,6 +60,7 @@ const AdminProjects = () => {
       image: project.image || "",
       githubUrl: project.githubUrl || "",
       liveUrl: project.liveUrl || "",
+      category: project.category || "Web",
       imageFileName: project.imageFileName || "",
     });
     originalDataRef.current = {
@@ -65,6 +72,7 @@ const AdminProjects = () => {
       image: project.image || "",
       githubUrl: project.githubUrl || "",
       liveUrl: project.liveUrl || "",
+      category: project.category || "Web",
       imageFileName: project.imageFileName || "",
     };
   };
@@ -80,6 +88,7 @@ const AdminProjects = () => {
       image: "",
       githubUrl: "",
       liveUrl: "",
+      category: "Web",
       imageFileName: "",
     });
     originalDataRef.current = {
@@ -91,6 +100,7 @@ const AdminProjects = () => {
       image: "",
       githubUrl: "",
       liveUrl: "",
+      category: "Web",
       imageFileName: "",
     };
   };
@@ -249,6 +259,7 @@ const AdminProjects = () => {
       image: "",
       githubUrl: "",
       liveUrl: "",
+      category: "Web",
       imageFileName: "",
     });
     originalDataRef.current = {
@@ -260,6 +271,7 @@ const AdminProjects = () => {
       image: "",
       githubUrl: "",
       liveUrl: "",
+      category: "Web",
       imageFileName: "",
     };
     setIsAdding(false);
@@ -293,6 +305,16 @@ const AdminProjects = () => {
     const end = endDate ? formatDate(endDate) : "Present";
 
     return `${start} - ${end}`;
+  };
+
+  // Pagination logic
+  const totalPages = Math.ceil(projects.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentProjects = projects.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -440,6 +462,50 @@ const AdminProjects = () => {
                 </div>
               </div>
 
+              {/* Category Selection */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Category
+                </label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:contrast-200 [&>option]:bg-deep-space [&>option]:text-nebula-mint"
+                >
+                  <option
+                    value="Web"
+                    className="bg-deep-space text-nebula-mint"
+                  >
+                    Web
+                  </option>
+                  <option
+                    value="Embedded"
+                    className="bg-deep-space text-nebula-mint"
+                  >
+                    Embedded
+                  </option>
+                  <option
+                    value="Games"
+                    className="bg-deep-space text-nebula-mint"
+                  >
+                    Games
+                  </option>
+                  <option
+                    value="App"
+                    className="bg-deep-space text-nebula-mint"
+                  >
+                    App
+                  </option>
+                  <option
+                    value="Algorithms"
+                    className="bg-deep-space text-nebula-mint"
+                  >
+                    Algorithms
+                  </option>
+                </select>
+              </div>
+
               {/* Team Type Selection */}
               <div>
                 <label className="block text-nebula-mint text-sm font-medium mb-2">
@@ -453,7 +519,7 @@ const AdminProjects = () => {
                       value="single"
                       checked={formData.teamType === "single"}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-stellar-blue bg-cosmic-purple/20 border-cosmic-purple/30 focus:ring-stellar-blue focus:ring-2"
+                      className="w-4 h-4 text-stellar-blue bg-cosmic-purple/20 border-cosmic-purple/30 rounded focus:ring-stellar-blue focus:ring-2 checked:bg-stellar-blue checked:border-stellar-blue"
                     />
                     <span className="text-nebula-mint">Individual Project</span>
                   </label>
@@ -464,7 +530,7 @@ const AdminProjects = () => {
                       value="team"
                       checked={formData.teamType === "team"}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-stellar-blue bg-cosmic-purple/20 border-cosmic-purple/30 focus:ring-stellar-blue focus:ring-2"
+                      className="w-4 h-4 text-stellar-blue bg-cosmic-purple/20 border-cosmic-purple/30 rounded focus:ring-stellar-blue focus:ring-2 checked:bg-stellar-blue checked:border-stellar-blue"
                     />
                     <span className="text-nebula-mint">Team Project</span>
                   </label>
@@ -553,7 +619,7 @@ const AdminProjects = () => {
               No Projects found
             </div>
           )}
-          {projects.map((project) => (
+          {currentProjects.map((project) => (
             <div key={project.id} className="card">
               <div className="flex justify-between items-start">
                 <div className="flex-1 min-w-0">
@@ -598,6 +664,9 @@ const AdminProjects = () => {
                         ? "Team Project"
                         : "Individual"}
                     </span>
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-cosmic-purple/20 border border-cosmic-purple/30 text-nebula-mint">
+                      {project.category}
+                    </span>
                   </div>
                   <p className="text-nebula-mint/80 mt-2">
                     {project.description}
@@ -626,9 +695,14 @@ const AdminProjects = () => {
                           href={project.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-stellar-blue hover:text-nebula-mint text-sm"
+                          className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center space-x-1 transition-colors duration-300"
                         >
-                          GitHub
+                          <img
+                            src={githubIcon}
+                            alt="GitHub"
+                            className="h-3 w-3 object-contain logo-nebula-mint"
+                          />
+                          <span>GitHub</span>
                         </a>
                       )}
                       {project.liveUrl && (
@@ -636,9 +710,14 @@ const AdminProjects = () => {
                           href={project.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-stellar-blue hover:text-nebula-mint text-sm"
+                          className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center space-x-1 transition-colors duration-300"
                         >
-                          Live Demo
+                          <img
+                            src={liveIcon}
+                            alt="Live Demo"
+                            className="h-3 w-3 object-contain logo-nebula-mint"
+                          />
+                          <span>Live Demo</span>
                         </a>
                       )}
                     </div>
@@ -672,6 +751,15 @@ const AdminProjects = () => {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          itemsPerPage={itemsPerPage}
+          totalItems={projects.length}
+        />
       </div>
     </AdminSectionWrapper>
   );

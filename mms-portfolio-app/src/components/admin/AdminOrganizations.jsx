@@ -5,8 +5,17 @@ import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
 import deleteIcon from "../../assets/buttons/delete.png";
 import uploadIcon from "../../assets/buttons/upload.png";
+import externalLinkIcon from "../../assets/info/external-link.png";
+import personIcon from "../../assets/info/person.png";
+import briefcaseIcon from "../../assets/info/briefcase.png";
+import locationIcon from "../../assets/info/information.png";
+import calendarIcon from "../../assets/info/dashboard.png";
+import descriptionIcon from "../../assets/info/edit-code.png";
+import websiteIcon from "../../assets/info/browser.png";
+import socialIcon from "../../assets/info/social-media.png";
 import AdminSectionWrapper from "./AdminSectionWrapper";
 import PopupModal from "../PopupModal";
+import Pagination from "./Pagination";
 import {
   uploadOrganizationImage,
   deleteOrganizationImage,
@@ -17,6 +26,8 @@ const AdminOrganizations = () => {
   const { organizations } = data;
   const [editingId, setEditingId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
   const [formData, setFormData] = useState({
     name: "",
     role: "",
@@ -310,6 +321,16 @@ const AdminOrganizations = () => {
     return `${start} - ${end}`;
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(organizations.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentOrganizations = organizations.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <AdminSectionWrapper
       id="admin-organizations"
@@ -586,7 +607,7 @@ const AdminOrganizations = () => {
               No Organizations found
             </div>
           )}
-          {organizations.map((org) => (
+          {currentOrganizations.map((org) => (
             <div key={org.id} className="card">
               <div className="flex justify-between items-start">
                 <div className="flex-1 min-w-0">
@@ -618,9 +639,14 @@ const AdminOrganizations = () => {
                           href={org.websiteUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-stellar-blue hover:text-nebula-mint text-sm"
+                          className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center space-x-1"
                         >
-                          Website
+                          <img
+                            src={externalLinkIcon}
+                            alt="Website"
+                            className="h-3 w-3 object-contain logo-nebula-mint"
+                          />
+                          <span>Website</span>
                         </a>
                       )}
                       {org.socialUrl && (
@@ -628,9 +654,14 @@ const AdminOrganizations = () => {
                           href={org.socialUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-stellar-blue hover:text-nebula-mint text-sm"
+                          className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center space-x-1"
                         >
-                          Social Media
+                          <img
+                            src={socialIcon}
+                            alt="Social Media"
+                            className="h-3 w-3 object-contain logo-nebula-mint"
+                          />
+                          <span>Social Media</span>
                         </a>
                       )}
                     </div>
@@ -661,6 +692,15 @@ const AdminOrganizations = () => {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          itemsPerPage={itemsPerPage}
+          totalItems={organizations.length}
+        />
       </div>
     </AdminSectionWrapper>
   );

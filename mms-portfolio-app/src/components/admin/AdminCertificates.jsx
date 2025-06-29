@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
 import { useData } from "../../contexts/DataContext";
 import certificateIcon from "../../assets/info/certificate.png";
+import verifyIcon from "../../assets/info/verify.png";
+import externalLinkIcon from "../../assets/info/external-link.png";
 import AdminSectionWrapper from "./AdminSectionWrapper";
 import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
@@ -11,12 +13,15 @@ import {
   uploadCertificateImage,
   deleteCertificateImage,
 } from "../../services/certificatesService";
+import Pagination from "./Pagination";
 
 const AdminCertificates = () => {
   const { data, updateData, addItem, removeItem } = useData();
   const { certificates } = data;
   const [editingId, setEditingId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
   const [formData, setFormData] = useState({
     title: "",
     issuer: "",
@@ -282,6 +287,16 @@ const AdminCertificates = () => {
     });
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(certificates.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentCertificates = certificates.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <AdminSectionWrapper
       id="admin-certificates"
@@ -508,7 +523,7 @@ const AdminCertificates = () => {
               No Certificates found
             </div>
           )}
-          {certificates.map((cert) => (
+          {currentCertificates.map((cert) => (
             <div key={cert.id} className="card">
               <div className="flex justify-between items-start">
                 <div className="flex-1 min-w-0">
@@ -556,9 +571,14 @@ const AdminCertificates = () => {
                       href={cert.credentialUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-stellar-blue hover:text-nebula-mint text-sm mt-2 inline-block"
+                      className="text-stellar-blue hover:text-nebula-mint text-sm mt-2 inline-block flex items-center space-x-1"
                     >
-                      Verify Certificate
+                      <img
+                        src={verifyIcon}
+                        alt="Verify Certificate"
+                        className="h-3 w-3 object-contain logo-nebula-mint"
+                      />
+                      <span>Verify Certificate</span>
                     </a>
                   )}
                 </div>
@@ -587,6 +607,15 @@ const AdminCertificates = () => {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          itemsPerPage={itemsPerPage}
+          totalItems={certificates.length}
+        />
       </div>
     </AdminSectionWrapper>
   );

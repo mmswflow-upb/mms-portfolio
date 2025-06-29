@@ -26,6 +26,7 @@ const AdminPersonal = () => {
     description: personal.description || "",
     welcomeMessage: personal.welcomeMessage || "",
     codeSample: personal.codeSample || "",
+    repositoryPath: personal.repositoryPath || "",
   });
   // Add state for temporary file upload
   const [tempFile, setTempFile] = useState(null);
@@ -56,6 +57,7 @@ const AdminPersonal = () => {
         description: personal.description || "",
         welcomeMessage: personal.welcomeMessage || "",
         codeSample: personal.codeSample || "",
+        repositoryPath: personal.repositoryPath || "",
       });
       setDeletePhoto(false);
     }
@@ -178,6 +180,7 @@ const AdminPersonal = () => {
         description: formData.description,
         welcomeMessage: formData.welcomeMessage,
         codeSample: formData.codeSample,
+        repositoryPath: formData.repositoryPath,
         contact: personal.contact || { title: "", subtitle: "", methods: [] },
       };
       await updateData("personal", dataToSave);
@@ -211,6 +214,7 @@ const AdminPersonal = () => {
       description: personal.description || "",
       welcomeMessage: personal.welcomeMessage || "",
       codeSample: personal.codeSample || "",
+      repositoryPath: personal.repositoryPath || "",
     });
     setIsEditing(false);
   };
@@ -454,6 +458,24 @@ const AdminPersonal = () => {
                 />
               </div>
 
+              {/* Repository Path */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  GitHub Repository Path
+                </label>
+                <input
+                  type="text"
+                  name="repositoryPath"
+                  value={formData.repositoryPath}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="e.g., mmswflow-upb/portfolio"
+                />
+                <p className="text-nebula-mint/60 text-xs mt-1">
+                  Format: owner/repository-name (e.g., username/project-name)
+                </p>
+              </div>
+
               {/* Description - Converted to Textarea */}
               <div>
                 <label className="block text-nebula-mint text-sm font-medium mb-2">
@@ -603,6 +625,16 @@ const AdminPersonal = () => {
                 <p className="text-nebula-mint/60 text-sm">Welcome Message</p>
                 <p className="text-nebula-mint/80 mt-1">
                   {personal.welcomeMessage || "Not set"}
+                </p>
+              </div>
+
+              {/* Repository Path */}
+              <div>
+                <p className="text-nebula-mint/60 text-sm">
+                  GitHub Repository Path
+                </p>
+                <p className="text-nebula-mint/80 mt-1">
+                  {personal.repositoryPath || "Not set"}
                 </p>
               </div>
 

@@ -6,17 +6,21 @@ import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
 import deleteIcon from "../../assets/buttons/delete.png";
 import uploadIcon from "../../assets/buttons/upload.png";
+import externalLinkIcon from "../../assets/info/external-link.png";
 import PopupModal from "../PopupModal";
 import {
   uploadEducationImage,
   deleteEducationImage,
 } from "../../services/educationService";
+import Pagination from "./Pagination";
 
 const AdminEducation = () => {
   const { data, updateData, addItem, removeItem } = useData();
   const { education } = data;
   const [editingId, setEditingId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
   const [formData, setFormData] = useState({
     degree: "",
     institution: "",
@@ -29,6 +33,8 @@ const AdminEducation = () => {
     gpa: "",
     fieldOfStudy: "",
     subjects: "",
+    websiteUrl: "",
+    department: "",
     imageFileName: "",
   });
   const [tempFile, setTempFile] = useState(null);
@@ -60,6 +66,8 @@ const AdminEducation = () => {
       fieldOfStudy: edu.fieldOfStudy || "",
       subjects: (edu.subjects || []).join(", "),
       imageFileName: edu.imageFileName || "",
+      websiteUrl: edu.websiteUrl || "",
+      department: edu.department || "",
     });
     originalDataRef.current = {
       degree: edu.degree || "",
@@ -74,6 +82,8 @@ const AdminEducation = () => {
       fieldOfStudy: edu.fieldOfStudy || "",
       subjects: (edu.subjects || []).join(", "),
       imageFileName: edu.imageFileName || "",
+      websiteUrl: edu.websiteUrl || "",
+      department: edu.department || "",
     };
   };
 
@@ -92,6 +102,8 @@ const AdminEducation = () => {
       fieldOfStudy: "",
       subjects: "",
       imageFileName: "",
+      websiteUrl: "",
+      department: "",
     });
     originalDataRef.current = {
       degree: "",
@@ -106,6 +118,8 @@ const AdminEducation = () => {
       fieldOfStudy: "",
       subjects: "",
       imageFileName: "",
+      websiteUrl: "",
+      department: "",
     };
   };
 
@@ -272,6 +286,8 @@ const AdminEducation = () => {
       fieldOfStudy: "",
       subjects: "",
       imageFileName: "",
+      websiteUrl: "",
+      department: "",
     });
     originalDataRef.current = {
       degree: "",
@@ -286,6 +302,8 @@ const AdminEducation = () => {
       fieldOfStudy: "",
       subjects: "",
       imageFileName: "",
+      websiteUrl: "",
+      department: "",
     };
     setIsAdding(false);
     setEditingId(null);
@@ -318,6 +336,16 @@ const AdminEducation = () => {
     const end = endDate ? formatDate(endDate) : "Present";
 
     return `${start} - ${end}`;
+  };
+
+  // Pagination logic
+  const totalPages = Math.ceil(education.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEducation = education.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -481,7 +509,23 @@ const AdminEducation = () => {
                 </div>
                 <div>
                   <label className="block text-nebula-mint text-sm font-medium mb-2">
-                    GPA
+                    Department
+                  </label>
+                  <input
+                    type="text"
+                    name="department"
+                    value={formData.department}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                    placeholder="e.g., School of Engineering, Faculty of Science"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-nebula-mint text-sm font-medium mb-2">
+                    Avg Grade
                   </label>
                   <input
                     type="text"
@@ -489,7 +533,7 @@ const AdminEducation = () => {
                     value={formData.gpa}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
-                    placeholder="e.g., 3.8/4.0"
+                    placeholder="e.g., 3.8/4.0, 85%, A-"
                   />
                 </div>
               </div>
@@ -588,6 +632,21 @@ const AdminEducation = () => {
                 />
               </div>
 
+              {/* Website URL */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Website URL
+                </label>
+                <input
+                  type="url"
+                  name="websiteUrl"
+                  value={formData.websiteUrl}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="e.g., https://www.university.edu"
+                />
+              </div>
+
               <div className="flex space-x-3">
                 <button onClick={handleSave} className="btn-primary">
                   {editingId ? "Update" : "Add"} Education
@@ -610,7 +669,7 @@ const AdminEducation = () => {
               No Education found
             </div>
           )}
-          {education.map((edu) => (
+          {currentEducation.map((edu) => (
             <div key={edu.id} className="card">
               <div className="flex justify-between items-start">
                 <div className="flex-1 min-w-0">
@@ -631,6 +690,11 @@ const AdminEducation = () => {
                       {edu.fieldOfStudy}
                     </p>
                   )}
+                  {edu.department && (
+                    <p className="text-nebula-mint/60 text-sm">
+                      {edu.department}
+                    </p>
+                  )}
                   {edu.location && (
                     <p className="text-nebula-mint/60 text-sm">
                       {edu.location}
@@ -641,7 +705,7 @@ const AdminEducation = () => {
                   </p>
                   {edu.gpa && (
                     <p className="text-nebula-mint/60 text-sm">
-                      GPA: {edu.gpa}
+                      Avg Grade: {edu.gpa}
                     </p>
                   )}
                   <p className="text-nebula-mint/80 mt-2">{edu.description}</p>
@@ -660,6 +724,23 @@ const AdminEducation = () => {
                           </span>
                         ))}
                       </div>
+                    </div>
+                  )}
+                  {edu.websiteUrl && (
+                    <div className="mt-2">
+                      <a
+                        href={edu.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center space-x-1"
+                      >
+                        <img
+                          src={externalLinkIcon}
+                          alt="External Link"
+                          className="h-3 w-3 object-contain logo-nebula-mint"
+                        />
+                        <span>Institution Website</span>
+                      </a>
                     </div>
                   )}
                 </div>
@@ -688,6 +769,15 @@ const AdminEducation = () => {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          itemsPerPage={itemsPerPage}
+          totalItems={education.length}
+        />
       </div>
     </AdminSectionWrapper>
   );

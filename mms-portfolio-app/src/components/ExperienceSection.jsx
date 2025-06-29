@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useData } from "../contexts/DataContext";
 import briefcaseLogo from "../assets/info/briefcase.png";
+import teamIcon from "../assets/info/team.png";
+import personIcon from "../assets/info/person.png";
+import websiteIcon from "../assets/info/browser.png";
+import externalLinkIcon from "../assets/info/external-link.png";
 import SectionWrapper from "./SectionWrapper";
 import ExperienceCard from "./cards/ExperienceCard";
 import PopupModal from "./PopupModal";
 import LabelCard from "./cards/LabelCard";
-import teamIcon from "../assets/info/team.png";
-import personIcon from "../assets/info/person.png";
 
 const ExperienceSection = () => {
   const { data } = useData();
@@ -144,7 +146,9 @@ const ExperienceSection = () => {
             )}
 
             {/* Additional Links */}
-            {(selectedExperience.githubUrl || selectedExperience.liveUrl) && (
+            {(selectedExperience.githubUrl ||
+              selectedExperience.liveUrl ||
+              selectedExperience.websiteUrl) && (
               <div className="space-y-3">
                 <h4 className="text-lg font-semibold text-nebula-mint">
                   Links
@@ -188,6 +192,21 @@ const ExperienceSection = () => {
                         />
                       </svg>
                       <span>Live Demo</span>
+                    </a>
+                  )}
+                  {selectedExperience.websiteUrl && (
+                    <a
+                      href={selectedExperience.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
+                    >
+                      <img
+                        src={externalLinkIcon}
+                        alt="External Link"
+                        className="w-5 h-5 object-contain logo-nebula-mint"
+                      />
+                      <span>Company Website</span>
                     </a>
                   )}
                 </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useData } from "../contexts/DataContext";
 import educationLogo from "../assets/info/education.png";
+import externalLinkIcon from "../assets/info/external-link.png";
 import SectionWrapper from "./SectionWrapper";
 import EducationCard from "./cards/EducationCard";
 import PopupModal from "./PopupModal";
@@ -146,19 +147,11 @@ const EducationSection = () => {
                       rel="noopener noreferrer"
                       className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
                     >
-                      <svg
+                      <img
+                        src={externalLinkIcon}
+                        alt="External Link"
                         className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"
-                        />
-                      </svg>
+                      />
                       <span>Institution Website</span>
                     </a>
                   )}
@@ -169,19 +162,11 @@ const EducationSection = () => {
                       rel="noopener noreferrer"
                       className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
                     >
-                      <svg
+                      <img
+                        src={externalLinkIcon}
+                        alt="External Link"
                         className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
+                      />
                       <span>View Certificate</span>
                     </a>
                   )}

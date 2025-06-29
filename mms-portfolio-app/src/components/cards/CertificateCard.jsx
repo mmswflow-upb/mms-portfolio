@@ -1,6 +1,6 @@
 import { useState } from "react";
 import certificateLogo from "../../assets/info/certificate.png";
-import verifyLogo from "../../assets/info/verify.png";
+import verifyIcon from "../../assets/info/verify.png";
 
 const CertificateCard = ({ certificate, onClick, className = "" }) => {
   return (
@@ -88,7 +88,7 @@ const CertificateCard = ({ certificate, onClick, className = "" }) => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <img
-                  src={verifyLogo}
+                  src={verifyIcon}
                   alt="Verify Certificate"
                   className="h-4 w-4 object-contain logo-nebula-mint"
                 />

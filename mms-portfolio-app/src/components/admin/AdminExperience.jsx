@@ -4,16 +4,20 @@ import briefcaseIcon from "../../assets/info/briefcase.png";
 import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
 import deleteIcon from "../../assets/buttons/delete.png";
+import uploadIcon from "../../assets/buttons/upload.png";
+import externalLinkIcon from "../../assets/info/external-link.png";
 import AdminSectionWrapper from "./AdminSectionWrapper";
 import PopupModal from "../PopupModal";
+import Pagination from "./Pagination";
 import { uploadJobImage, deleteJobImage } from "../../services/jobsService";
-import uploadIcon from "../../assets/buttons/upload.png";
 
 const AdminExperience = () => {
   const { data, updateData, addItem, removeItem } = useData();
   const { experience } = data;
   const [editingId, setEditingId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
   const [formData, setFormData] = useState({
     title: "",
     company: "",
@@ -24,6 +28,7 @@ const AdminExperience = () => {
     description: "",
     technologies: "",
     image: "",
+    websiteUrl: "",
     imageFileName: "",
   });
   const [tempFile, setTempFile] = useState(null);
@@ -53,6 +58,7 @@ const AdminExperience = () => {
       description: exp.description || "",
       technologies: (exp.technologies || []).join(", "),
       image: exp.image || "",
+      websiteUrl: exp.websiteUrl || "",
       imageFileName: exp.imageFileName || "",
     });
     originalDataRef.current = {
@@ -65,6 +71,7 @@ const AdminExperience = () => {
       description: exp.description || "",
       technologies: (exp.technologies || []).join(", "),
       image: exp.image || "",
+      websiteUrl: exp.websiteUrl || "",
       imageFileName: exp.imageFileName || "",
     };
   };
@@ -81,6 +88,7 @@ const AdminExperience = () => {
       description: "",
       technologies: "",
       image: "",
+      websiteUrl: "",
       imageFileName: "",
     });
     originalDataRef.current = {
@@ -93,6 +101,7 @@ const AdminExperience = () => {
       description: "",
       technologies: "",
       image: "",
+      websiteUrl: "",
       imageFileName: "",
     };
   };
@@ -186,10 +195,20 @@ const AdminExperience = () => {
       }
     }
 
+    // Validate and format website URL
+    let websiteUrl = formData.websiteUrl;
+    if (websiteUrl && websiteUrl.trim()) {
+      // If URL doesn't start with http:// or https://, add https://
+      if (!websiteUrl.match(/^https?:\/\//)) {
+        websiteUrl = `https://${websiteUrl}`;
+      }
+    }
+
     const newExperience = {
       ...formData,
       image: imageUrl,
       imageFileName: imageFileName,
+      websiteUrl: websiteUrl,
       technologies: formData.technologies
         .split(",")
         .map((tech) => tech.trim())
@@ -259,6 +278,7 @@ const AdminExperience = () => {
       description: "",
       technologies: "",
       image: "",
+      websiteUrl: "",
       imageFileName: "",
     });
     originalDataRef.current = {
@@ -271,6 +291,7 @@ const AdminExperience = () => {
       description: "",
       technologies: "",
       image: "",
+      websiteUrl: "",
       imageFileName: "",
     };
     setIsAdding(false);
@@ -290,9 +311,8 @@ const AdminExperience = () => {
   };
 
   const formatDateRange = (startDate, endDate) => {
-    if (!startDate) return "";
-
     const formatDate = (dateString) => {
+      if (!dateString) return "";
       const date = new Date(dateString);
       return date.toLocaleDateString("en-US", {
         year: "numeric",
@@ -302,8 +322,17 @@ const AdminExperience = () => {
 
     const start = formatDate(startDate);
     const end = endDate ? formatDate(endDate) : "Present";
-
     return `${start} - ${end}`;
+  };
+
+  // Pagination logic
+  const totalPages = Math.ceil(experience.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentExperience = experience.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -463,6 +492,22 @@ const AdminExperience = () => {
                     placeholder="e.g., New York, NY"
                   />
                 </div>
+                <div>
+                  <label className="block text-nebula-mint text-sm font-medium mb-2">
+                    Website URL
+                  </label>
+                  <input
+                    type="url"
+                    name="websiteUrl"
+                    value={formData.websiteUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                    placeholder="e.g., https://company.com"
+                  />
+                  <p className="text-nebula-mint/40 text-xs mt-1">
+                    Include https:// for proper linking
+                  </p>
+                </div>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -504,7 +549,7 @@ const AdminExperience = () => {
                       endDate: e.target.checked ? "" : prev.endDate,
                     }));
                   }}
-                  className="w-4 h-4 text-stellar-blue bg-cosmic-purple/20 border-cosmic-purple/30 rounded focus:ring-stellar-blue focus:ring-2"
+                  className="w-4 h-4 text-stellar-blue bg-cosmic-purple/20 border-cosmic-purple/30 rounded focus:ring-stellar-blue focus:ring-2 checked:bg-stellar-blue checked:border-stellar-blue"
                 />
                 <label htmlFor="isPresent" className="text-nebula-mint text-sm">
                   I currently work here
@@ -560,7 +605,7 @@ const AdminExperience = () => {
               No Experience found
             </div>
           )}
-          {experience.map((exp) => (
+          {currentExperience.map((exp) => (
             <div key={exp.id} className="card">
               <div className="flex justify-between items-start">
                 <div className="flex-1 min-w-0">
@@ -595,6 +640,23 @@ const AdminExperience = () => {
                       </span>
                     ))}
                   </div>
+                  {exp.websiteUrl && (
+                    <div className="mt-2">
+                      <a
+                        href={exp.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center space-x-1"
+                      >
+                        <img
+                          src={externalLinkIcon}
+                          alt="External Link"
+                          className="h-3 w-3 object-contain logo-nebula-mint"
+                        />
+                        <span>Company Website</span>
+                      </a>
+                    </div>
+                  )}
                 </div>
                 <div className="flex space-x-2 ml-4">
                   <button onClick={() => handleEdit(exp)} className="btn-edit">
@@ -621,6 +683,15 @@ const AdminExperience = () => {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          itemsPerPage={itemsPerPage}
+          totalItems={experience.length}
+        />
       </div>
     </AdminSectionWrapper>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import briefcaseLogo from "../../assets/info/briefcase.png";
+import externalLinkIcon from "../../assets/info/external-link.png";
 
 const ExperienceCard = ({ experience, onClick, className = "" }) => {
   return (
@@ -65,6 +66,25 @@ const ExperienceCard = ({ experience, onClick, className = "" }) => {
                 </span>
               )}
             </div>
+
+            {experience.websiteUrl && (
+              <div className="flex items-center space-x-1">
+                <a
+                  href={experience.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center space-x-1 transition-colors duration-300"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <img
+                    src={externalLinkIcon}
+                    alt="External Link"
+                    className="h-3 w-3 object-contain logo-nebula-mint"
+                  />
+                  <span>Company Website</span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

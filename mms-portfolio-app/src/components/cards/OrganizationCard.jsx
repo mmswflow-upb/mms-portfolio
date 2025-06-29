@@ -1,6 +1,6 @@
 import { useState } from "react";
 import organizationLogo from "../../assets/info/organization.png";
-import browserLogo from "../../assets/info/browser.png";
+import externalLinkIcon from "../../assets/info/external-link.png";
 import socialMediaLogo from "../../assets/info/social-media.png";
 
 const OrganizationCard = ({ organization, onClick, className = "" }) => {
@@ -68,7 +68,7 @@ const OrganizationCard = ({ organization, onClick, className = "" }) => {
                     onClick={(e) => e.stopPropagation()}
                   >
                     <img
-                      src={browserLogo}
+                      src={externalLinkIcon}
                       alt="Website"
                       className="h-4 w-4 object-contain logo-nebula-mint"
                     />

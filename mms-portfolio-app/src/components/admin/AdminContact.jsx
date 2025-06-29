@@ -10,12 +10,15 @@ import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
 import deleteIcon from "../../assets/buttons/delete.png";
 import PopupModal from "../PopupModal";
+import Pagination from "./Pagination";
 
 const AdminContact = () => {
   const { data, updateData, isLoading } = useData();
   const [editingId, setEditingId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isEditingHeader, setIsEditingHeader] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
   const [formData, setFormData] = useState({
     type: "",
     value: "",
@@ -193,6 +196,16 @@ const AdminContact = () => {
     title: "",
     subtitle: "",
     methods: [],
+  };
+
+  // Pagination logic
+  const totalPages = Math.ceil(contact.methods.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMethods = contact.methods.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -389,7 +402,7 @@ const AdminContact = () => {
 
           {/* Contact Methods List */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(contact.methods || []).map((method) => (
+            {currentMethods.map((method) => (
               <div key={method.id} className="card">
                 <div className="flex justify-between items-start">
                   <div className="flex-1 min-w-0">
@@ -437,6 +450,15 @@ const AdminContact = () => {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+            itemsPerPage={itemsPerPage}
+            totalItems={contact.methods.length}
+          />
         </div>
       </div>
     </AdminSectionWrapper>

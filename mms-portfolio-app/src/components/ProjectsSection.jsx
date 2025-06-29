@@ -3,6 +3,11 @@ import { useData } from "../contexts/DataContext";
 import codeLogo from "../assets/info/code.png";
 import teamIcon from "../assets/info/team.png";
 import personIcon from "../assets/info/person.png";
+import webIcon from "../assets/info/web-dev.png";
+import embeddedIcon from "../assets/info/algorithm.png";
+import gameIcon from "../assets/info/game.png";
+import appIcon from "../assets/info/dashboard.png";
+import algorithmIcon from "../assets/info/algorithm.png";
 import SectionWrapper from "./SectionWrapper";
 import ProjectCard from "./cards/ProjectCard";
 import PopupModal from "./PopupModal";
@@ -13,10 +18,40 @@ const ProjectsSection = () => {
   const { projects } = data;
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const icon = (
     <img src={codeLogo} alt="Projects" className="h-8 w-8 object-contain" />
   );
+
+  // Get unique categories from projects
+  const categories = [
+    "All",
+    ...new Set(projects.map((project) => project.category)),
+  ];
+
+  // Filter projects based on selected category
+  const filteredProjects =
+    selectedCategory === "All"
+      ? projects
+      : projects.filter((project) => project.category === selectedCategory);
+
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case "Web":
+        return webIcon;
+      case "Embedded":
+        return embeddedIcon;
+      case "Games":
+        return gameIcon;
+      case "App":
+        return appIcon;
+      case "Algorithms":
+        return algorithmIcon;
+      default:
+        return codeLogo;
+    }
+  };
 
   const handleCardClick = (project) => {
     setSelectedProject(project);
@@ -39,14 +74,53 @@ const ProjectsSection = () => {
         prevSectionId="education"
         showArrow={false}
       >
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onClick={() => handleCardClick(project)}
-            />
+        {/* Category Navigation */}
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-all duration-300 ${
+                selectedCategory === category
+                  ? "bg-stellar-blue/20 border-stellar-blue/50 text-stellar-blue"
+                  : "bg-cosmic-purple/20 border-cosmic-purple/30 text-nebula-mint hover:bg-cosmic-purple/30 hover:border-cosmic-purple/50"
+              }`}
+            >
+              <img
+                src={getCategoryIcon(category)}
+                alt={category}
+                className="h-4 w-4 object-contain logo-nebula-mint"
+              />
+              <span className="font-medium">{category}</span>
+              {selectedCategory === category && (
+                <span className="text-xs bg-stellar-blue/30 px-2 py-1 rounded-full">
+                  {filteredProjects.length}
+                </span>
+              )}
+            </button>
           ))}
+        </div>
+
+        {/* Projects Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.length > 0 ? (
+            filteredProjects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onClick={() => handleCardClick(project)}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-nebula-mint/60 text-lg">
+                No projects found in the "{selectedCategory}" category.
+              </p>
+              <p className="text-nebula-mint/40 text-sm mt-2">
+                Try selecting a different category or check back later.
+              </p>
+            </div>
+          )}
         </div>
       </SectionWrapper>
 
