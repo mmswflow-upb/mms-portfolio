@@ -25,7 +25,8 @@ const AdminCertificates = () => {
   const [formData, setFormData] = useState({
     title: "",
     issuer: "",
-    description: "",
+    shortDescription: "",
+    longDescription: "",
     skills: "",
     image: "",
     credentialId: "",
@@ -50,7 +51,8 @@ const AdminCertificates = () => {
     setFormData({
       title: cert.title || "",
       issuer: cert.issuer || "",
-      description: cert.description || "",
+      shortDescription: cert.shortDescription || "",
+      longDescription: cert.longDescription || "",
       skills: (cert.skills || []).join(", "),
       image: cert.image || "",
       credentialId: cert.credentialId || "",
@@ -60,7 +62,8 @@ const AdminCertificates = () => {
     originalDataRef.current = {
       title: cert.title || "",
       issuer: cert.issuer || "",
-      description: cert.description || "",
+      shortDescription: cert.shortDescription || "",
+      longDescription: cert.longDescription || "",
       skills: (cert.skills || []).join(", "),
       image: cert.image || "",
       credentialId: cert.credentialId || "",
@@ -74,7 +77,8 @@ const AdminCertificates = () => {
     setFormData({
       title: "",
       issuer: "",
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       skills: "",
       image: "",
       credentialId: "",
@@ -84,7 +88,8 @@ const AdminCertificates = () => {
     originalDataRef.current = {
       title: "",
       issuer: "",
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       skills: "",
       image: "",
       credentialId: "",
@@ -244,7 +249,8 @@ const AdminCertificates = () => {
     setFormData({
       title: "",
       issuer: "",
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       skills: "",
       image: "",
       credentialId: "",
@@ -254,7 +260,8 @@ const AdminCertificates = () => {
     originalDataRef.current = {
       title: "",
       issuer: "",
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       skills: "",
       image: "",
       credentialId: "",
@@ -474,11 +481,25 @@ const AdminCertificates = () => {
               {/* Description */}
               <div>
                 <label className="block text-nebula-mint text-sm font-medium mb-2">
-                  Description
+                  Short Description
                 </label>
                 <textarea
-                  name="description"
-                  value={formData.description}
+                  name="shortDescription"
+                  value={formData.shortDescription}
+                  onChange={handleInputChange}
+                  rows={2}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="Short description of the certificate"
+                />
+              </div>
+
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Long Description
+                </label>
+                <textarea
+                  name="longDescription"
+                  value={formData.longDescription}
                   onChange={handleInputChange}
                   rows={5}
                   className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
@@ -545,7 +566,7 @@ const AdminCertificates = () => {
                     </p>
                   )}
                   {/* Display skills if available, otherwise show description */}
-                  {(cert.skills || []).length > 0 ? (
+                  {(cert.skills || []).length > 0 && (
                     <div className="mt-2">
                       <span className="text-nebula-mint/60 text-sm font-semibold mr-2">
                         Skills:
@@ -561,9 +582,21 @@ const AdminCertificates = () => {
                         ))}
                       </div>
                     </div>
-                  ) : (
+                  )}
+                  {cert.shortDescription && (
                     <p className="text-nebula-mint/80 mt-2">
-                      {cert.description}
+                      <span className="font-semibold text-stellar-blue">
+                        Short:
+                      </span>{" "}
+                      {cert.shortDescription}
+                    </p>
+                  )}
+                  {cert.longDescription && (
+                    <p className="text-nebula-mint/80 mt-1">
+                      <span className="font-semibold text-stellar-blue">
+                        Long:
+                      </span>{" "}
+                      {cert.longDescription}
                     </p>
                   )}
                   {cert.credentialUrl && (

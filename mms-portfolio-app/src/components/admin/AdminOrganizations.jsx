@@ -6,13 +6,15 @@ import plusIcon from "../../assets/buttons/plus.png";
 import deleteIcon from "../../assets/buttons/delete.png";
 import uploadIcon from "../../assets/buttons/upload.png";
 import externalLinkIcon from "../../assets/info/external-link.png";
+import twitterIcon from "../../assets/info/twitter.png";
+import instagramIcon from "../../assets/info/instagram.png";
+import youtubeIcon from "../../assets/info/youtube.png";
 import personIcon from "../../assets/info/person.png";
 import briefcaseIcon from "../../assets/info/briefcase.png";
 import locationIcon from "../../assets/info/information.png";
 import calendarIcon from "../../assets/info/dashboard.png";
 import descriptionIcon from "../../assets/info/edit-code.png";
 import websiteIcon from "../../assets/info/browser.png";
-import socialIcon from "../../assets/info/social-media.png";
 import AdminSectionWrapper from "./AdminSectionWrapper";
 import PopupModal from "../PopupModal";
 import Pagination from "./Pagination";
@@ -35,11 +37,12 @@ const AdminOrganizations = () => {
     startDate: "",
     endDate: "",
     isPresent: false,
-    description: "",
+    shortDescription: "",
+    longDescription: "",
     image: "",
     websiteUrl: "",
-    socialUrl: "",
     imageFileName: "",
+    socialMedia: [],
   });
   const [tempFile, setTempFile] = useState(null);
   const [tempPreview, setTempPreview] = useState(null);
@@ -64,11 +67,12 @@ const AdminOrganizations = () => {
       startDate: org.startDate || "",
       endDate: isPresent ? "" : org.endDate || "",
       isPresent: isPresent,
-      description: org.description || "",
+      shortDescription: org.shortDescription || "",
+      longDescription: org.longDescription || "",
       image: org.image || "",
       websiteUrl: org.websiteUrl || "",
-      socialUrl: org.socialUrl || "",
       imageFileName: org.imageFileName || "",
+      socialMedia: org.socialMedia || [],
     });
     originalDataRef.current = {
       name: org.name || "",
@@ -77,11 +81,12 @@ const AdminOrganizations = () => {
       startDate: org.startDate || "",
       endDate: isPresent ? "" : org.endDate || "",
       isPresent: isPresent,
-      description: org.description || "",
+      shortDescription: org.shortDescription || "",
+      longDescription: org.longDescription || "",
       image: org.image || "",
       websiteUrl: org.websiteUrl || "",
-      socialUrl: org.socialUrl || "",
       imageFileName: org.imageFileName || "",
+      socialMedia: org.socialMedia || [],
     };
   };
 
@@ -94,11 +99,12 @@ const AdminOrganizations = () => {
       startDate: "",
       endDate: "",
       isPresent: false,
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       image: "",
       websiteUrl: "",
-      socialUrl: "",
       imageFileName: "",
+      socialMedia: [],
     });
     originalDataRef.current = {
       name: "",
@@ -107,11 +113,12 @@ const AdminOrganizations = () => {
       startDate: "",
       endDate: "",
       isPresent: false,
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       image: "",
       websiteUrl: "",
-      socialUrl: "",
       imageFileName: "",
+      socialMedia: [],
     };
   };
 
@@ -269,11 +276,12 @@ const AdminOrganizations = () => {
       startDate: "",
       endDate: "",
       isPresent: false,
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       image: "",
       websiteUrl: "",
-      socialUrl: "",
       imageFileName: "",
+      socialMedia: [],
     });
     originalDataRef.current = {
       name: "",
@@ -282,11 +290,12 @@ const AdminOrganizations = () => {
       startDate: "",
       endDate: "",
       isPresent: false,
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       image: "",
       websiteUrl: "",
-      socialUrl: "",
       imageFileName: "",
+      socialMedia: [],
     };
     setIsAdding(false);
     setEditingId(null);
@@ -329,6 +338,29 @@ const AdminOrganizations = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const addSocialMedia = () => {
+    setFormData((prev) => ({
+      ...prev,
+      socialMedia: [...prev.socialMedia, { platform: "twitter", url: "" }],
+    }));
+  };
+
+  const removeSocialMedia = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      socialMedia: prev.socialMedia.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updateSocialMedia = (index, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      socialMedia: prev.socialMedia.map((social, i) =>
+        i === index ? { ...social, [field]: value } : social
+      ),
+    }));
   };
 
   return (
@@ -543,45 +575,123 @@ const AdminOrganizations = () => {
               {/* Description */}
               <div>
                 <label className="block text-nebula-mint text-sm font-medium mb-2">
-                  Description
+                  Short Description
                 </label>
                 <textarea
-                  name="description"
-                  value={formData.description}
+                  name="shortDescription"
+                  value={formData.shortDescription}
+                  onChange={handleInputChange}
+                  rows={2}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="Brief description of your involvement"
+                />
+              </div>
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Long Description
+                </label>
+                <textarea
+                  name="longDescription"
+                  value={formData.longDescription}
                   onChange={handleInputChange}
                   rows={5}
                   className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
-                  placeholder="Describe your involvement, achievements, and impact..."
+                  placeholder="Detailed description of your involvement, achievements, and impact..."
                 />
               </div>
 
               {/* URLs */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-nebula-mint text-sm font-medium mb-2">
-                    Website URL
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Website URL
+                </label>
+                <input
+                  type="url"
+                  name="websiteUrl"
+                  value={formData.websiteUrl}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="e.g., https://organization.com"
+                />
+              </div>
+
+              {/* Social Media Links */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-nebula-mint text-sm font-medium">
+                    Social Media Links
                   </label>
-                  <input
-                    type="url"
-                    name="websiteUrl"
-                    value={formData.websiteUrl}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
-                    placeholder="e.g., https://organization.com"
-                  />
+                  <button
+                    type="button"
+                    onClick={addSocialMedia}
+                    className="btn-secondary text-xs px-2 py-1 flex items-center space-x-1"
+                  >
+                    <img
+                      src={plusIcon}
+                      alt="Add"
+                      className="h-3 w-3 object-contain logo-nebula-mint"
+                    />
+                    <span>Add Social Media</span>
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-nebula-mint text-sm font-medium mb-2">
-                    Social Media URL
-                  </label>
-                  <input
-                    type="url"
-                    name="socialUrl"
-                    value={formData.socialUrl}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
-                    placeholder="e.g., https://linkedin.com/company/organization"
-                  />
+                <div className="space-y-3">
+                  {formData.socialMedia.map((social, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <select
+                        value={social.platform}
+                        onChange={(e) =>
+                          updateSocialMedia(index, "platform", e.target.value)
+                        }
+                        className="px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                      >
+                        <option
+                          value="twitter"
+                          className="bg-deep-space text-nebula-mint"
+                        >
+                          Twitter
+                        </option>
+                        <option
+                          value="instagram"
+                          className="bg-deep-space text-nebula-mint"
+                        >
+                          Instagram
+                        </option>
+                        <option
+                          value="youtube"
+                          className="bg-deep-space text-nebula-mint"
+                        >
+                          YouTube
+                        </option>
+                      </select>
+                      <input
+                        type="url"
+                        value={social.url}
+                        onChange={(e) =>
+                          updateSocialMedia(index, "url", e.target.value)
+                        }
+                        placeholder="https://..."
+                        className="flex-1 px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeSocialMedia(index)}
+                        className="btn-secondary text-xs px-2 py-1 flex items-center space-x-1 text-red-400 hover:text-red-300"
+                      >
+                        <img
+                          src={deleteIcon}
+                          alt="Remove"
+                          className="h-3 w-3 object-contain logo-nebula-mint"
+                        />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  ))}
+                  {formData.socialMedia.length === 0 && (
+                    <p className="text-nebula-mint/40 text-sm">
+                      No social media links added. Click "Add Social Media" to
+                      add one.
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -631,8 +741,23 @@ const AdminOrganizations = () => {
                   <p className="text-nebula-mint/60">
                     {formatDateRange(org.startDate, org.endDate)}
                   </p>
-                  <p className="text-nebula-mint/80 mt-2">{org.description}</p>
-                  {(org.websiteUrl || org.socialUrl) && (
+                  {org.shortDescription && (
+                    <p className="text-nebula-mint/80 mt-2">
+                      <span className="font-semibold text-stellar-blue">
+                        Short:
+                      </span>{" "}
+                      {org.shortDescription}
+                    </p>
+                  )}
+                  {org.longDescription && (
+                    <p className="text-nebula-mint/80 mt-1">
+                      <span className="font-semibold text-stellar-blue">
+                        Long:
+                      </span>{" "}
+                      {org.longDescription}
+                    </p>
+                  )}
+                  {org.websiteUrl && (
                     <div className="flex gap-2 mt-2">
                       {org.websiteUrl && (
                         <a
@@ -649,21 +774,62 @@ const AdminOrganizations = () => {
                           <span>Website</span>
                         </a>
                       )}
-                      {org.socialUrl && (
-                        <a
-                          href={org.socialUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center space-x-1"
-                        >
-                          <img
-                            src={socialIcon}
-                            alt="Social Media"
-                            className="h-3 w-3 object-contain logo-nebula-mint"
-                          />
-                          <span>Social Media</span>
-                        </a>
-                      )}
+                    </div>
+                  )}
+                  {(org.socialMedia || []).length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-nebula-mint/60 text-sm mb-1">
+                        Social Media:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {org.socialMedia.map((social, index) => {
+                          const getSocialIcon = (platform) => {
+                            switch (platform) {
+                              case "twitter":
+                                return twitterIcon;
+                              case "instagram":
+                                return instagramIcon;
+                              case "youtube":
+                                return youtubeIcon;
+                              default:
+                                return externalLinkIcon;
+                            }
+                          };
+
+                          const getSocialLabel = (platform) => {
+                            switch (platform) {
+                              case "twitter":
+                                return "Twitter";
+                              case "instagram":
+                                return "Instagram";
+                              case "youtube":
+                                return "YouTube";
+                              default:
+                                return (
+                                  platform.charAt(0).toUpperCase() +
+                                  platform.slice(1)
+                                );
+                            }
+                          };
+
+                          return (
+                            <a
+                              key={index}
+                              href={social.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-stellar-blue hover:text-nebula-mint text-xs flex items-center space-x-1"
+                            >
+                              <img
+                                src={getSocialIcon(social.platform)}
+                                alt={getSocialLabel(social.platform)}
+                                className="h-3 w-3 object-contain logo-nebula-mint"
+                              />
+                              <span>{getSocialLabel(social.platform)}</span>
+                            </a>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>

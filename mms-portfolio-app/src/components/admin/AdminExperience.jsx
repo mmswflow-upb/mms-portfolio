@@ -25,7 +25,8 @@ const AdminExperience = () => {
     startDate: "",
     endDate: "",
     isPresent: false,
-    description: "",
+    shortDescription: "",
+    longDescription: "",
     technologies: "",
     image: "",
     websiteUrl: "",
@@ -55,7 +56,8 @@ const AdminExperience = () => {
       startDate: exp.startDate || "",
       endDate: isPresent ? "" : exp.endDate || "",
       isPresent: isPresent,
-      description: exp.description || "",
+      shortDescription: exp.shortDescription || "",
+      longDescription: exp.longDescription || "",
       technologies: (exp.technologies || []).join(", "),
       image: exp.image || "",
       websiteUrl: exp.websiteUrl || "",
@@ -68,7 +70,8 @@ const AdminExperience = () => {
       startDate: exp.startDate || "",
       endDate: isPresent ? "" : exp.endDate || "",
       isPresent: isPresent,
-      description: exp.description || "",
+      shortDescription: exp.shortDescription || "",
+      longDescription: exp.longDescription || "",
       technologies: (exp.technologies || []).join(", "),
       image: exp.image || "",
       websiteUrl: exp.websiteUrl || "",
@@ -85,7 +88,8 @@ const AdminExperience = () => {
       startDate: "",
       endDate: "",
       isPresent: false,
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       technologies: "",
       image: "",
       websiteUrl: "",
@@ -98,7 +102,8 @@ const AdminExperience = () => {
       startDate: "",
       endDate: "",
       isPresent: false,
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       technologies: "",
       image: "",
       websiteUrl: "",
@@ -275,7 +280,8 @@ const AdminExperience = () => {
       startDate: "",
       endDate: "",
       isPresent: false,
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       technologies: "",
       image: "",
       websiteUrl: "",
@@ -288,7 +294,8 @@ const AdminExperience = () => {
       startDate: "",
       endDate: "",
       isPresent: false,
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       technologies: "",
       image: "",
       websiteUrl: "",
@@ -558,11 +565,24 @@ const AdminExperience = () => {
               {/* Description - Enhanced Textarea */}
               <div>
                 <label className="block text-nebula-mint text-sm font-medium mb-2">
-                  Description
+                  Short Description
                 </label>
                 <textarea
-                  name="description"
-                  value={formData.description}
+                  name="shortDescription"
+                  value={formData.shortDescription}
+                  onChange={handleInputChange}
+                  rows={2}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="Brief description of the experience"
+                />
+              </div>
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Long Description
+                </label>
+                <textarea
+                  name="longDescription"
+                  value={formData.longDescription}
                   onChange={handleInputChange}
                   rows={6}
                   className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
@@ -629,7 +649,22 @@ const AdminExperience = () => {
                   <p className="text-nebula-mint/60">
                     {formatDateRange(exp.startDate, exp.endDate)}
                   </p>
-                  <p className="text-nebula-mint/80 mt-2">{exp.description}</p>
+                  {exp.shortDescription && (
+                    <p className="text-nebula-mint/80 mt-2">
+                      <span className="font-semibold text-stellar-blue">
+                        Short:
+                      </span>{" "}
+                      {exp.shortDescription}
+                    </p>
+                  )}
+                  {exp.longDescription && (
+                    <p className="text-nebula-mint/80 mt-1">
+                      <span className="font-semibold text-stellar-blue">
+                        Long:
+                      </span>{" "}
+                      {exp.longDescription}
+                    </p>
+                  )}
                   <div className="flex flex-wrap gap-2 mt-2">
                     {(exp.technologies || []).map((tech, index) => (
                       <span

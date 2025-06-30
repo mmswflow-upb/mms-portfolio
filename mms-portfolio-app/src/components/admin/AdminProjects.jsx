@@ -5,6 +5,9 @@ import teamIcon from "../../assets/info/team.png";
 import personIcon from "../../assets/info/person.png";
 import githubIcon from "../../assets/info/github.png";
 import liveIcon from "../../assets/info/pulse.png";
+import twitterIcon from "../../assets/info/twitter.png";
+import instagramIcon from "../../assets/info/instagram.png";
+import youtubeIcon from "../../assets/info/youtube.png";
 import AdminSectionWrapper from "./AdminSectionWrapper";
 import editIcon from "../../assets/buttons/edit.png";
 import plusIcon from "../../assets/buttons/plus.png";
@@ -26,7 +29,8 @@ const AdminProjects = () => {
   const itemsPerPage = 3;
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
+    shortDescription: "",
+    longDescription: "",
     role: "",
     teamType: "single", // "single" or "team"
     technologies: "",
@@ -35,6 +39,7 @@ const AdminProjects = () => {
     liveUrl: "",
     category: "Web", // "Web", "Embedded", "Games", "App Dev"
     imageFileName: "",
+    socialMedia: [],
   });
   const [tempFile, setTempFile] = useState(null);
   const [tempPreview, setTempPreview] = useState(null);
@@ -53,7 +58,8 @@ const AdminProjects = () => {
     setEditingId(project.id);
     setFormData({
       title: project.title || "",
-      description: project.description || "",
+      shortDescription: project.shortDescription || "",
+      longDescription: project.longDescription || "",
       role: project.role || "",
       teamType: project.teamType || "single",
       technologies: (project.technologies || []).join(", "),
@@ -62,10 +68,12 @@ const AdminProjects = () => {
       liveUrl: project.liveUrl || "",
       category: project.category || "Web",
       imageFileName: project.imageFileName || "",
+      socialMedia: project.socialMedia || [],
     });
     originalDataRef.current = {
       title: project.title || "",
-      description: project.description || "",
+      shortDescription: project.shortDescription || "",
+      longDescription: project.longDescription || "",
       role: project.role || "",
       teamType: project.teamType || "single",
       technologies: (project.technologies || []).join(", "),
@@ -74,6 +82,7 @@ const AdminProjects = () => {
       liveUrl: project.liveUrl || "",
       category: project.category || "Web",
       imageFileName: project.imageFileName || "",
+      socialMedia: project.socialMedia || [],
     };
   };
 
@@ -81,7 +90,8 @@ const AdminProjects = () => {
     setIsAdding(true);
     setFormData({
       title: "",
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       role: "",
       teamType: "single",
       technologies: "",
@@ -90,10 +100,12 @@ const AdminProjects = () => {
       liveUrl: "",
       category: "Web",
       imageFileName: "",
+      socialMedia: [],
     });
     originalDataRef.current = {
       title: "",
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       role: "",
       teamType: "single",
       technologies: "",
@@ -102,6 +114,7 @@ const AdminProjects = () => {
       liveUrl: "",
       category: "Web",
       imageFileName: "",
+      socialMedia: [],
     };
   };
 
@@ -252,7 +265,8 @@ const AdminProjects = () => {
     setTempPreview(null);
     setFormData({
       title: "",
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       role: "",
       teamType: "single",
       technologies: "",
@@ -261,10 +275,12 @@ const AdminProjects = () => {
       liveUrl: "",
       category: "Web",
       imageFileName: "",
+      socialMedia: [],
     });
     originalDataRef.current = {
       title: "",
-      description: "",
+      shortDescription: "",
+      longDescription: "",
       role: "",
       teamType: "single",
       technologies: "",
@@ -273,6 +289,7 @@ const AdminProjects = () => {
       liveUrl: "",
       category: "Web",
       imageFileName: "",
+      socialMedia: [],
     };
     setIsAdding(false);
     setEditingId(null);
@@ -315,6 +332,29 @@ const AdminProjects = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const addSocialMedia = () => {
+    setFormData((prev) => ({
+      ...prev,
+      socialMedia: [...prev.socialMedia, { platform: "twitter", url: "" }],
+    }));
+  };
+
+  const removeSocialMedia = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      socialMedia: prev.socialMedia.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updateSocialMedia = (index, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      socialMedia: prev.socialMedia.map((social, i) =>
+        i === index ? { ...social, [field]: value } : social
+      ),
+    }));
   };
 
   return (
@@ -570,11 +610,26 @@ const AdminProjects = () => {
               {/* Description */}
               <div>
                 <label className="block text-nebula-mint text-sm font-medium mb-2">
-                  Description
+                  Short Description
                 </label>
                 <textarea
-                  name="description"
-                  value={formData.description}
+                  name="shortDescription"
+                  value={formData.shortDescription}
+                  onChange={handleInputChange}
+                  rows={2}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="Brief description of the project"
+                />
+              </div>
+
+              {/* Long Description */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Long Description
+                </label>
+                <textarea
+                  name="longDescription"
+                  value={formData.longDescription}
                   onChange={handleInputChange}
                   rows={5}
                   className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
@@ -595,6 +650,86 @@ const AdminProjects = () => {
                   className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
                   placeholder="e.g., React, Three.js, Node.js, MongoDB, AWS"
                 />
+              </div>
+
+              {/* Social Media Links */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-nebula-mint text-sm font-medium">
+                    Social Media Links
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addSocialMedia}
+                    className="btn-secondary text-xs px-2 py-1 flex items-center space-x-1"
+                  >
+                    <img
+                      src={plusIcon}
+                      alt="Add"
+                      className="h-3 w-3 object-contain logo-nebula-mint"
+                    />
+                    <span>Add Social Media</span>
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {formData.socialMedia.map((social, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <select
+                        value={social.platform}
+                        onChange={(e) =>
+                          updateSocialMedia(index, "platform", e.target.value)
+                        }
+                        className="px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                      >
+                        <option
+                          value="twitter"
+                          className="bg-deep-space text-nebula-mint"
+                        >
+                          Twitter
+                        </option>
+                        <option
+                          value="instagram"
+                          className="bg-deep-space text-nebula-mint"
+                        >
+                          Instagram
+                        </option>
+                        <option
+                          value="youtube"
+                          className="bg-deep-space text-nebula-mint"
+                        >
+                          YouTube
+                        </option>
+                      </select>
+                      <input
+                        type="url"
+                        value={social.url}
+                        onChange={(e) =>
+                          updateSocialMedia(index, "url", e.target.value)
+                        }
+                        placeholder="https://..."
+                        className="flex-1 px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeSocialMedia(index)}
+                        className="btn-secondary text-xs px-2 py-1 flex items-center space-x-1 text-red-400 hover:text-red-300"
+                      >
+                        <img
+                          src={deleteIcon}
+                          alt="Remove"
+                          className="h-3 w-3 object-contain logo-nebula-mint"
+                        />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  ))}
+                  {formData.socialMedia.length === 0 && (
+                    <p className="text-nebula-mint/40 text-sm">
+                      No social media links added. Click "Add Social Media" to
+                      add one.
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className="flex space-x-3">
@@ -669,8 +804,16 @@ const AdminProjects = () => {
                     </span>
                   </div>
                   <p className="text-nebula-mint/80 mt-2">
-                    {project.description}
+                    {project.shortDescription}
                   </p>
+                  {project.longDescription && (
+                    <p className="text-nebula-mint/80 mt-1">
+                      <span className="font-semibold text-stellar-blue">
+                        Long:
+                      </span>{" "}
+                      {project.longDescription}
+                    </p>
+                  )}
                   {(project.technologies || []).length > 0 && (
                     <div className="mt-2">
                       <span className="text-nebula-mint/60 text-sm font-semibold mr-2">
@@ -720,6 +863,62 @@ const AdminProjects = () => {
                           <span>Live Demo</span>
                         </a>
                       )}
+                    </div>
+                  )}
+                  {(project.socialMedia || []).length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-nebula-mint/60 text-sm mb-1">
+                        Social Media:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.socialMedia.map((social, index) => {
+                          const getSocialIcon = (platform) => {
+                            switch (platform) {
+                              case "twitter":
+                                return twitterIcon;
+                              case "instagram":
+                                return instagramIcon;
+                              case "youtube":
+                                return youtubeIcon;
+                              default:
+                                return githubIcon;
+                            }
+                          };
+
+                          const getSocialLabel = (platform) => {
+                            switch (platform) {
+                              case "twitter":
+                                return "Twitter";
+                              case "instagram":
+                                return "Instagram";
+                              case "youtube":
+                                return "YouTube";
+                              default:
+                                return (
+                                  platform.charAt(0).toUpperCase() +
+                                  platform.slice(1)
+                                );
+                            }
+                          };
+
+                          return (
+                            <a
+                              key={index}
+                              href={social.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-stellar-blue hover:text-nebula-mint text-xs flex items-center space-x-1"
+                            >
+                              <img
+                                src={getSocialIcon(social.platform)}
+                                alt={getSocialLabel(social.platform)}
+                                className="h-3 w-3 object-contain logo-nebula-mint"
+                              />
+                              <span>{getSocialLabel(social.platform)}</span>
+                            </a>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>

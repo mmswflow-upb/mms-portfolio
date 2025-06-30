@@ -2,8 +2,14 @@ import { useState } from "react";
 import { useData } from "../contexts/DataContext";
 import educationLogo from "../assets/info/education.png";
 import externalLinkIcon from "../assets/info/external-link.png";
+import twitterIcon from "../assets/info/twitter.png";
+import instagramIcon from "../assets/info/instagram.png";
+import youtubeIcon from "../assets/info/youtube.png";
+import locationIcon from "../assets/info/location-pin.png";
+import calendarIcon from "../assets/info/schedule.png";
+import departmentIcon from "../assets/info/department.png";
 import SectionWrapper from "./SectionWrapper";
-import EducationCard from "./cards/EducationCard";
+import StandardCard from "./cards/StandardCard";
 import PopupModal from "./PopupModal";
 import LabelCard from "./cards/LabelCard";
 
@@ -43,13 +49,109 @@ const EducationSection = () => {
         showArrow={false}
       >
         <div className="space-y-6">
-          {education.map((edu) => (
-            <EducationCard
-              key={edu.id}
-              education={edu}
-              onClick={() => handleCardClick(edu)}
-            />
-          ))}
+          {education.map((edu) => {
+            // Prepare content for the card
+            const content = (
+              <div className="space-y-2">
+                {edu.period && (
+                  <p className="text-nebula-mint/60 text-sm flex items-center gap-1">
+                    <img
+                      src={calendarIcon}
+                      alt="Period"
+                      className="h-3 w-3 object-contain logo-nebula-mint"
+                    />
+                    {edu.period}
+                  </p>
+                )}
+                {edu.department && (
+                  <p className="text-nebula-mint/60 text-sm flex items-center gap-1">
+                    <img
+                      src={departmentIcon}
+                      alt="Department"
+                      className="h-3 w-3 object-contain logo-nebula-mint"
+                    />
+                    {edu.department}
+                  </p>
+                )}
+                {edu.location && (
+                  <p className="text-nebula-mint/60 text-sm flex items-center gap-1">
+                    <img
+                      src={locationIcon}
+                      alt="Location"
+                      className="h-3 w-3 object-contain logo-nebula-mint"
+                    />
+                    {edu.location}
+                  </p>
+                )}
+              </div>
+            );
+
+            // Prepare links for the card
+            const links = [];
+            if (edu.websiteUrl) {
+              links.push({
+                url: edu.websiteUrl,
+                label: "Institution Website",
+                icon: externalLinkIcon,
+                alt: "Institution Website",
+              });
+            }
+
+            // Add social media links
+            if (edu.socialMedia && edu.socialMedia.length > 0) {
+              edu.socialMedia.forEach((social) => {
+                const getSocialIcon = (platform) => {
+                  switch (platform) {
+                    case "twitter":
+                      return twitterIcon;
+                    case "instagram":
+                      return instagramIcon;
+                    case "youtube":
+                      return youtubeIcon;
+                    default:
+                      return externalLinkIcon;
+                  }
+                };
+
+                const getSocialLabel = (platform) => {
+                  switch (platform) {
+                    case "twitter":
+                      return "Twitter";
+                    case "instagram":
+                      return "Instagram";
+                    case "youtube":
+                      return "YouTube";
+                    default:
+                      return (
+                        platform.charAt(0).toUpperCase() + platform.slice(1)
+                      );
+                  }
+                };
+
+                links.push({
+                  url: social.url,
+                  label: getSocialLabel(social.platform),
+                  icon: getSocialIcon(social.platform),
+                  alt: getSocialLabel(social.platform),
+                });
+              });
+            }
+
+            return (
+              <StandardCard
+                key={edu.id}
+                item={edu}
+                sectionType="education"
+                onClick={() => handleCardClick(edu)}
+                imageSize="w-16 h-16"
+                header={edu.degree}
+                subheader={edu.institution}
+                shortDescription={edu.shortDescription}
+                content={content}
+                links={links}
+              />
+            );
+          })}
         </div>
       </SectionWrapper>
 
@@ -114,7 +216,8 @@ const EducationSection = () => {
                 Description
               </h4>
               <p className="text-nebula-mint/80 leading-relaxed text-lg">
-                {selectedEducation.description}
+                {selectedEducation.longDescription ||
+                  selectedEducation.shortDescription}
               </p>
             </div>
 
@@ -134,7 +237,9 @@ const EducationSection = () => {
 
             {/* Links */}
             {(selectedEducation.websiteUrl ||
-              selectedEducation.certificateUrl) && (
+              selectedEducation.certificateUrl ||
+              (selectedEducation.socialMedia &&
+                selectedEducation.socialMedia.length > 0)) && (
               <div className="space-y-3">
                 <h4 className="text-lg font-semibold text-nebula-mint">
                   Links
@@ -170,6 +275,54 @@ const EducationSection = () => {
                       <span>View Certificate</span>
                     </a>
                   )}
+                  {selectedEducation.socialMedia &&
+                    selectedEducation.socialMedia.map((social, index) => {
+                      const getSocialIcon = (platform) => {
+                        switch (platform) {
+                          case "twitter":
+                            return twitterIcon;
+                          case "instagram":
+                            return instagramIcon;
+                          case "youtube":
+                            return youtubeIcon;
+                          default:
+                            return externalLinkIcon;
+                        }
+                      };
+
+                      const getSocialLabel = (platform) => {
+                        switch (platform) {
+                          case "twitter":
+                            return "Twitter";
+                          case "instagram":
+                            return "Instagram";
+                          case "youtube":
+                            return "YouTube";
+                          default:
+                            return (
+                              platform.charAt(0).toUpperCase() +
+                              platform.slice(1)
+                            );
+                        }
+                      };
+
+                      return (
+                        <a
+                          key={index}
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
+                        >
+                          <img
+                            src={getSocialIcon(social.platform)}
+                            alt={getSocialLabel(social.platform)}
+                            className="w-5 h-5 object-contain logo-nebula-mint"
+                          />
+                          <span>{getSocialLabel(social.platform)}</span>
+                        </a>
+                      );
+                    })}
                 </div>
               </div>
             )}

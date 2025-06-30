@@ -15,7 +15,8 @@
       "company": "TechCorp Solutions",
       "period": "2022 - Present",
       "description": "Lead development of enterprise-scale applications serving 100K+ users. Architected microservices infrastructure and mentored junior developers.",
-      "technologies": ["React", "Node.js", "AWS", "Docker"]
+      "technologies": ["React", "Node.js", "AWS", "Docker"],
+      "companyUrl": "https://techcorp-solutions.com"
     },
     {
       "id": 2,
@@ -23,7 +24,8 @@
       "company": "StartupXYZ",
       "period": "2020 - 2022",
       "description": "Built responsive web applications and improved user experience metrics by 40%. Collaborated with design team to implement pixel-perfect interfaces.",
-      "technologies": ["Vue.js", "TypeScript", "Sass"]
+      "technologies": ["Vue.js", "TypeScript", "Sass"],
+      "companyUrl": "https://startupxyz.com"
     }
   ],
   "organizations": [
@@ -31,15 +33,39 @@
       "id": 1,
       "title": "Open Source Contributor",
       "organization": "GitHub Community",
-      "icon": "fab fa-github",
-      "description": "Active contributor to various open source projects with 500+ commits and 50+ pull requests merged."
+      "role": "Active Contributor",
+      "startDate": "2020",
+      "endDate": "Present",
+      "location": "Remote",
+      "description": "Active contributor to various open source projects with 500+ commits and 50+ pull requests merged.",
+      "websiteUrl": "https://github.com",
+      "socialMedia": [
+        {
+          "platform": "twitter",
+          "url": "https://twitter.com/github"
+        },
+        {
+          "platform": "youtube",
+          "url": "https://youtube.com/github"
+        }
+      ]
     },
     {
       "id": 2,
       "title": "Tech Meetup Organizer",
       "organization": "Local Dev Community",
-      "icon": "fas fa-users",
-      "description": "Organize monthly meetups for 200+ developers, fostering knowledge sharing and networking."
+      "role": "Organizer",
+      "startDate": "2021",
+      "endDate": "Present",
+      "location": "San Francisco, CA",
+      "description": "Organize monthly meetups for 200+ developers, fostering knowledge sharing and networking.",
+      "websiteUrl": "https://localdevcommunity.org",
+      "socialMedia": [
+        {
+          "platform": "instagram",
+          "url": "https://instagram.com/localdevcommunity"
+        }
+      ]
     }
   ],
   "education": [
@@ -48,33 +74,88 @@
       "degree": "Bachelor of Computer Science",
       "institution": "University of Technology",
       "period": "2016 - 2020",
-      "description": "Graduated Magna Cum Laude with focus on Software Engineering and Data Structures."
+      "location": "San Francisco, CA",
+      "description": "Graduated Magna Cum Laude with focus on Software Engineering and Data Structures.",
+      "websiteUrl": "https://universitytech.edu",
+      "socialMedia": [
+        {
+          "platform": "twitter",
+          "url": "https://twitter.com/universitytech"
+        },
+        {
+          "platform": "instagram",
+          "url": "https://instagram.com/universitytech"
+        },
+        {
+          "platform": "youtube",
+          "url": "https://youtube.com/universitytech"
+        }
+      ]
     }
   ],
   "projects": [
     {
       "id": 1,
       "title": "Space Explorer",
+      "role": "Full Stack Developer",
+      "teamType": "team",
       "description": "Interactive space exploration app with real-time data visualization.",
-      "technologies": ["React", "Three.js"],
-      "icon": "fas fa-rocket",
-      "gradient": "from-space-blue to-space-purple"
+      "technologies": ["React", "Three.js", "Node.js", "MongoDB", "WebGL"],
+      "category": "Web",
+      "githubUrl": "https://github.com/mario/space-explorer",
+      "liveUrl": "https://space-explorer.app",
+      "socialMedia": [
+        {
+          "platform": "twitter",
+          "url": "https://twitter.com/spaceexplorer"
+        },
+        {
+          "platform": "youtube",
+          "url": "https://youtube.com/spaceexplorer"
+        }
+      ]
     },
     {
       "id": 2,
       "title": "Analytics Dashboard",
+      "role": "Frontend Developer",
+      "teamType": "individual",
       "description": "Real-time analytics platform with advanced data visualization.",
-      "technologies": ["Vue.js", "D3.js"],
-      "icon": "fas fa-chart-line",
-      "gradient": "from-space-mint to-space-blue"
+      "technologies": ["Vue.js", "D3.js", "TypeScript", "Firebase"],
+      "category": "Web",
+      "githubUrl": "https://github.com/mario/analytics-dashboard",
+      "liveUrl": "https://analytics-dashboard.app",
+      "socialMedia": [
+        {
+          "platform": "instagram",
+          "url": "https://instagram.com/analyticsdashboard"
+        }
+      ]
     },
     {
       "id": 3,
       "title": "Mobile Fitness App",
+      "role": "Mobile Developer",
+      "teamType": "team",
       "description": "Cross-platform fitness tracking app with social features.",
-      "technologies": ["React Native", "Firebase"],
-      "icon": "fas fa-mobile-alt",
-      "gradient": "from-space-purple to-space-black"
+      "technologies": ["React Native", "Firebase", "Redux", "Expo"],
+      "category": "App",
+      "githubUrl": "https://github.com/mario/fitness-app",
+      "liveUrl": "https://fitness-app.com",
+      "socialMedia": [
+        {
+          "platform": "twitter",
+          "url": "https://twitter.com/fitnessapp"
+        },
+        {
+          "platform": "instagram",
+          "url": "https://instagram.com/fitnessapp"
+        },
+        {
+          "platform": "youtube",
+          "url": "https://youtube.com/fitnessapp"
+        }
+      ]
     }
   ],
   "certificates": [
@@ -82,15 +163,17 @@
       "id": 1,
       "title": "AWS Certified Solutions Architect",
       "issuer": "Amazon Web Services",
-      "icon": "fab fa-aws",
-      "description": "Professional level certification for cloud architecture and deployment."
+      "description": "Professional level certification for cloud architecture and deployment.",
+      "skills": ["AWS", "Cloud Architecture", "DevOps", "Infrastructure"],
+      "certificateUrl": "https://aws.amazon.com/verification"
     },
     {
       "id": 2,
       "title": "Google Cloud Professional",
       "issuer": "Google Cloud Platform",
-      "icon": "fab fa-google",
-      "description": "Expert level certification in cloud computing and infrastructure."
+      "description": "Expert level certification in cloud computing and infrastructure.",
+      "skills": ["Google Cloud", "Kubernetes", "Docker", "Microservices"],
+      "certificateUrl": "https://cloud.google.com/certification"
     }
   ],
   "contact": {
