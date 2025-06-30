@@ -10,6 +10,7 @@ import AdminSectionWrapper from "./AdminSectionWrapper";
 import PopupModal from "../PopupModal";
 import Pagination from "./Pagination";
 import { uploadJobImage, deleteJobImage } from "../../services/jobsService";
+import { parseEscapedCommaList } from "../../utils/stringUtils";
 
 const AdminExperience = () => {
   const { data, updateData, addItem, removeItem } = useData();
@@ -214,10 +215,7 @@ const AdminExperience = () => {
       image: imageUrl,
       imageFileName: imageFileName,
       websiteUrl: websiteUrl,
-      technologies: formData.technologies
-        .split(",")
-        .map((tech) => tech.trim())
-        .filter((tech) => tech),
+      technologies: parseEscapedCommaList(formData.technologies || ""),
     };
 
     try {
@@ -603,6 +601,21 @@ const AdminExperience = () => {
                   placeholder="e.g., React, Node.js, AWS, Docker, TypeScript, PostgreSQL"
                 />
               </div>
+              <div className="mt-2">
+                <p className="text-nebula-mint/60 text-xs mb-1">Preview:</p>
+                <div className="flex flex-wrap gap-2">
+                  {parseEscapedCommaList(formData.technologies || "").map(
+                    (tech, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-xs"
+                      >
+                        {tech}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
               <div className="flex space-x-3">
                 <button onClick={handleSave} className="btn-primary">
                   {editingId ? "Update" : "Add"} Experience
@@ -665,16 +678,26 @@ const AdminExperience = () => {
                       {exp.longDescription}
                     </p>
                   )}
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {(exp.technologies || []).map((tech, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+                  {exp.technologies && exp.technologies.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-nebula-mint/60 text-sm mb-2">
+                        Technologies:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {(Array.isArray(exp.technologies)
+                          ? exp.technologies
+                          : parseEscapedCommaList(exp.technologies || "")
+                        ).map((tech, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {exp.websiteUrl && (
                     <div className="mt-2">
                       <a

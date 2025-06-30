@@ -3,10 +3,12 @@ import { useData } from "../contexts/DataContext";
 import certificateLogo from "../assets/info/certificate.png";
 import externalLinkIcon from "../assets/info/external-link.png";
 import verifyIcon from "../assets/info/verify.png";
+import calendarIcon from "../assets/info/schedule.png";
 import SectionWrapper from "./SectionWrapper";
 import StandardCard from "./cards/StandardCard";
-import PopupModal from "./PopupModal";
+import StandardModal from "./StandardModal";
 import LabelCard from "./cards/LabelCard";
+import { parseEscapedCommaList } from "../utils/stringUtils";
 
 const CertificatesSection = () => {
   const { data } = useData();
@@ -45,16 +47,23 @@ const CertificatesSection = () => {
       >
         <div className="space-y-6">
           {certificates.map((cert) => {
+            // Parse skills (handle both arrays and escaped comma strings)
+            const skills = Array.isArray(cert.skills)
+              ? cert.skills
+              : cert.skills
+              ? parseEscapedCommaList(cert.skills)
+              : [];
+
             // Prepare content for the card
             const content = (
               <div className="space-y-2">
-                {(cert.skills || []).length > 0 && (
+                {skills.length > 0 && (
                   <div>
                     <span className="text-nebula-mint/60 text-sm font-semibold mr-2">
                       Skills:
                     </span>
                     <div className="flex flex-wrap gap-2 mt-1">
-                      {cert.skills.slice(0, 4).map((skill, index) => (
+                      {skills.slice(0, 4).map((skill, index) => (
                         <span
                           key={index}
                           className="px-3 py-1 bg-stellar-blue/20 border border-stellar-blue/30 rounded-full text-stellar-blue text-sm group-hover:bg-stellar-blue/30 group-hover:border-stellar-blue/50 transition-all duration-300"
@@ -62,9 +71,9 @@ const CertificatesSection = () => {
                           {skill}
                         </span>
                       ))}
-                      {cert.skills.length > 4 && (
+                      {skills.length > 4 && (
                         <span className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-full text-nebula-mint/60 text-sm">
-                          +{cert.skills.length - 4} more
+                          +{skills.length - 4} more
                         </span>
                       )}
                     </div>
@@ -102,98 +111,65 @@ const CertificatesSection = () => {
         </div>
       </SectionWrapper>
 
-      <PopupModal
+      <StandardModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={selectedCertificate?.title}
-      >
-        {selectedCertificate && (
-          <div className="space-y-6">
-            {/* Header Information */}
-            <div className="space-y-4">
-              <div className="flex items-start space-x-4">
-                {selectedCertificate.image && (
-                  <img
-                    src={selectedCertificate.image}
-                    alt={selectedCertificate.title}
-                    className="w-20 h-20 object-cover rounded-lg border border-cosmic-purple/30 flex-shrink-0"
-                  />
-                )}
-                <div className="flex-1">
-                  <h3 className="text-stellar-blue text-xl font-semibold">
-                    {selectedCertificate.issuer}
-                  </h3>
-                  <p className="text-nebula-mint/80 text-lg">
-                    {selectedCertificate.title}
-                  </p>
-                  {selectedCertificate.issueDate && (
-                    <p className="text-nebula-mint/60 text-sm">
-                      📅 Issued: {selectedCertificate.issueDate}
-                    </p>
-                  )}
-                  {selectedCertificate.expiryDate && (
-                    <p className="text-nebula-mint/60 text-sm">
-                      ⏰ Expires: {selectedCertificate.expiryDate}
-                    </p>
-                  )}
-                </div>
+        item={selectedCertificate}
+        sectionType="certificate"
+        header={selectedCertificate?.title}
+        subheader={selectedCertificate?.issuer}
+        metadata={[
+          ...(selectedCertificate?.credentialId
+            ? [
+                {
+                  label: "Credential ID",
+                  value: selectedCertificate.credentialId,
+                },
+              ]
+            : []),
+        ]}
+        description={
+          selectedCertificate?.longDescription ||
+          selectedCertificate?.shortDescription
+        }
+        content={
+          selectedCertificate?.skills &&
+          (Array.isArray(selectedCertificate.skills)
+            ? selectedCertificate.skills.length > 0
+            : selectedCertificate.skills) && (
+            <div className="space-y-2 mt-2">
+              <h4 className="text-lg font-semibold text-nebula-mint">
+                Skills Covered
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {(Array.isArray(selectedCertificate.skills)
+                  ? selectedCertificate.skills
+                  : parseEscapedCommaList(selectedCertificate.skills || "")
+                ).map((skill, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
+                  >
+                    {skill}
+                  </span>
+                ))}
               </div>
             </div>
-
-            {/* Description */}
-            {(selectedCertificate.longDescription ||
-              selectedCertificate.shortDescription) && (
-              <div className="space-y-2">
-                <h4 className="text-lg font-semibold text-nebula-mint">
-                  Description
-                </h4>
-                <p className="text-nebula-mint/80 leading-relaxed text-lg">
-                  {selectedCertificate.longDescription ||
-                    selectedCertificate.shortDescription}
-                </p>
-              </div>
-            )}
-
-            {/* Skills/Coverage */}
-            {(selectedCertificate.skills || []).length > 0 && (
-              <div className="space-y-3">
-                <h4 className="text-lg font-semibold text-nebula-mint">
-                  Skills Covered
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedCertificate.skills.map((skill, index) => (
-                    <LabelCard key={index} label={skill} onClick={() => {}} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Links */}
-            {selectedCertificate.credentialUrl && (
-              <div className="space-y-3">
-                <h4 className="text-lg font-semibold text-nebula-mint">
-                  Links
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  <a
-                    href={selectedCertificate.credentialUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
-                  >
-                    <img
-                      src={verifyIcon}
-                      alt="Verify Certificate"
-                      className="w-5 h-5"
-                    />
-                    <span>Verify Certificate</span>
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </PopupModal>
+          )
+        }
+        links={
+          selectedCertificate?.credentialUrl
+            ? [
+                {
+                  url: selectedCertificate.credentialUrl,
+                  label: "Verify Certificate",
+                  icon: verifyIcon,
+                  alt: "Verify Certificate",
+                },
+              ]
+            : []
+        }
+      />
     </>
   );
 };

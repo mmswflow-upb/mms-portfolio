@@ -16,6 +16,7 @@ import {
   deleteEducationImage,
 } from "../../services/educationService";
 import Pagination from "./Pagination";
+import { parseEscapedCommaList } from "../../utils/stringUtils";
 
 const AdminEducation = () => {
   const { data, updateData, addItem, removeItem } = useData();
@@ -224,10 +225,7 @@ const AdminEducation = () => {
       ...formData,
       image: imageUrl,
       imageFileName: imageFileName,
-      subjects: formData.subjects
-        .split(",")
-        .map((subject) => subject.trim())
-        .filter((subject) => subject),
+      subjects: parseEscapedCommaList(formData.subjects || ""),
     };
 
     try {
@@ -759,6 +757,22 @@ const AdminEducation = () => {
                 </div>
               </div>
 
+              <div className="mt-2">
+                <p className="text-nebula-mint/60 text-xs mb-1">Preview:</p>
+                <div className="flex flex-wrap gap-2">
+                  {parseEscapedCommaList(formData.subjects || "").map(
+                    (subject, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-xs"
+                      >
+                        {subject}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
               <div className="flex space-x-3">
                 <button onClick={handleSave} className="btn-primary">
                   {editingId ? "Update" : "Add"} Education
@@ -826,13 +840,16 @@ const AdminEducation = () => {
                       {edu.longDescription}
                     </p>
                   )}
-                  {(edu.subjects || []).length > 0 && (
+                  {edu.subjects && edu.subjects.length > 0 && (
                     <div className="mt-2">
                       <p className="text-nebula-mint/60 text-sm mb-2">
                         Relevant Subjects:
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {edu.subjects.map((subject, index) => (
+                        {(Array.isArray(edu.subjects)
+                          ? edu.subjects
+                          : parseEscapedCommaList(edu.subjects || "")
+                        ).map((subject, index) => (
                           <span
                             key={index}
                             className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"

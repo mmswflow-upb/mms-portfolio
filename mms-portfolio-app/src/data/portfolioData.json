@@ -15,7 +15,7 @@
       "company": "TechCorp Solutions",
       "period": "2022 - Present",
       "description": "Lead development of enterprise-scale applications serving 100K+ users. Architected microservices infrastructure and mentored junior developers.",
-      "technologies": ["React", "Node.js", "AWS", "Docker"],
+      "technologies": "React, Node.js, AWS, Docker, C\\, C++",
       "companyUrl": "https://techcorp-solutions.com"
     },
     {
@@ -38,6 +38,7 @@
       "endDate": "Present",
       "location": "Remote",
       "description": "Active contributor to various open source projects with 500+ commits and 50+ pull requests merged.",
+      "skills": "Git, JavaScript, Python, Code Review, Collaboration, Team\\, Leadership",
       "websiteUrl": "https://github.com",
       "socialMedia": [
         {
@@ -59,6 +60,7 @@
       "endDate": "Present",
       "location": "San Francisco, CA",
       "description": "Organize monthly meetups for 200+ developers, fostering knowledge sharing and networking.",
+      "skills": ["Event Planning", "Public Speaking", "Networking", "Community Building"],
       "websiteUrl": "https://localdevcommunity.org",
       "socialMedia": [
         {
@@ -76,6 +78,8 @@
       "period": "2016 - 2020",
       "location": "San Francisco, CA",
       "description": "Graduated Magna Cum Laude with focus on Software Engineering and Data Structures.",
+      "gpa": "3.8/4.0",
+      "relevantSubjects": "Data Structures, Algorithms, Software Engineering, Database Systems, Web Development, Machine Learning\\, AI",
       "websiteUrl": "https://universitytech.edu",
       "socialMedia": [
         {

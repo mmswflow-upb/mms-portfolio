@@ -22,6 +22,7 @@ import {
   uploadOrganizationImage,
   deleteOrganizationImage,
 } from "../../services/organizationsService";
+import { parseEscapedCommaList } from "../../utils/stringUtils";
 
 const AdminOrganizations = () => {
   const { data, updateData, addItem, removeItem } = useData();
@@ -43,6 +44,7 @@ const AdminOrganizations = () => {
     websiteUrl: "",
     imageFileName: "",
     socialMedia: [],
+    skills: "",
   });
   const [tempFile, setTempFile] = useState(null);
   const [tempPreview, setTempPreview] = useState(null);
@@ -73,6 +75,7 @@ const AdminOrganizations = () => {
       websiteUrl: org.websiteUrl || "",
       imageFileName: org.imageFileName || "",
       socialMedia: org.socialMedia || [],
+      skills: org.skills || "",
     });
     originalDataRef.current = {
       name: org.name || "",
@@ -87,6 +90,7 @@ const AdminOrganizations = () => {
       websiteUrl: org.websiteUrl || "",
       imageFileName: org.imageFileName || "",
       socialMedia: org.socialMedia || [],
+      skills: org.skills || "",
     };
   };
 
@@ -105,6 +109,7 @@ const AdminOrganizations = () => {
       websiteUrl: "",
       imageFileName: "",
       socialMedia: [],
+      skills: "",
     });
     originalDataRef.current = {
       name: "",
@@ -119,6 +124,7 @@ const AdminOrganizations = () => {
       websiteUrl: "",
       imageFileName: "",
       socialMedia: [],
+      skills: "",
     };
   };
 
@@ -218,6 +224,7 @@ const AdminOrganizations = () => {
       ...formData,
       image: imageUrl,
       imageFileName: imageFileName,
+      skills: parseEscapedCommaList(formData.skills || ""),
     };
 
     try {
@@ -282,6 +289,7 @@ const AdminOrganizations = () => {
       websiteUrl: "",
       imageFileName: "",
       socialMedia: [],
+      skills: "",
     });
     originalDataRef.current = {
       name: "",
@@ -296,6 +304,7 @@ const AdminOrganizations = () => {
       websiteUrl: "",
       imageFileName: "",
       socialMedia: [],
+      skills: "",
     };
     setIsAdding(false);
     setEditingId(null);
@@ -695,6 +704,38 @@ const AdminOrganizations = () => {
                 </div>
               </div>
 
+              {/* Skills */}
+              <div>
+                <label className="block text-nebula-mint text-sm font-medium mb-2">
+                  Skills
+                </label>
+                <input
+                  type="text"
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint focus:outline-none focus:border-stellar-blue"
+                  placeholder="e.g., Teamwork, Leadership"
+                />
+              </div>
+
+              {/* Preview */}
+              <div className="mt-2">
+                <p className="text-nebula-mint/60 text-xs mb-1">Preview:</p>
+                <div className="flex flex-wrap gap-2">
+                  {parseEscapedCommaList(formData.skills || "").map(
+                    (skill, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-xs"
+                      >
+                        {skill}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
               <div className="flex space-x-3">
                 <button onClick={handleSave} className="btn-primary">
                   {editingId ? "Update" : "Add"} Organization
@@ -829,6 +870,26 @@ const AdminOrganizations = () => {
                             </a>
                           );
                         })}
+                      </div>
+                    </div>
+                  )}
+                  {org.skills && org.skills.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-nebula-mint/60 text-sm mb-2">
+                        Skills:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {(Array.isArray(org.skills)
+                          ? org.skills
+                          : parseEscapedCommaList(org.skills || "")
+                        ).map((skill, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
+                          >
+                            {skill}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   )}

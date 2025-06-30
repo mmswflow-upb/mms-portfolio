@@ -6,8 +6,9 @@ import calendarIcon from "../assets/info/schedule.png";
 import locationIcon from "../assets/info/location-pin.png";
 import SectionWrapper from "./SectionWrapper";
 import StandardCard from "./cards/StandardCard";
-import PopupModal from "./PopupModal";
+import StandardModal from "./StandardModal";
 import LabelCard from "./cards/LabelCard";
+import { parseEscapedCommaList } from "../utils/stringUtils";
 
 const ExperienceSection = () => {
   const { data } = useData();
@@ -33,6 +34,22 @@ const ExperienceSection = () => {
     setSelectedExperience(null);
   };
 
+  // Helper function to format date range
+  const formatDateRange = (startDate, endDate, isPresent) => {
+    const formatDate = (dateString) => {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
+    };
+
+    const start = formatDate(startDate);
+    const end = endDate ? formatDate(endDate) : "Present";
+    return `${start} - ${end}`;
+  };
+
   return (
     <>
       <SectionWrapper
@@ -46,22 +63,6 @@ const ExperienceSection = () => {
       >
         <div className="space-y-6">
           {experience.map((exp) => {
-            // Prepare content for the card
-            const formatDateRange = (startDate, endDate, isPresent) => {
-              const formatDate = (dateString) => {
-                if (!dateString) return "";
-                const date = new Date(dateString);
-                return date.toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                });
-              };
-
-              const start = formatDate(startDate);
-              const end = endDate ? formatDate(endDate) : "Present";
-              return `${start} - ${end}`;
-            };
-
             const content = (
               <div className="space-y-2">
                 <p className="text-nebula-mint/60 text-sm flex items-center gap-1">
@@ -114,90 +115,73 @@ const ExperienceSection = () => {
         </div>
       </SectionWrapper>
 
-      <PopupModal
+      <StandardModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={selectedExperience?.title}
-      >
-        {selectedExperience && (
-          <div className="space-y-6">
-            {/* Header Information */}
-            <div className="space-y-4">
-              <div className="flex items-start space-x-4">
-                {selectedExperience.image && (
-                  <img
-                    src={selectedExperience.image}
-                    alt={selectedExperience.company}
-                    className="w-20 h-20 object-cover rounded-lg border border-cosmic-purple/30 flex-shrink-0"
-                  />
-                )}
-                <div className="flex-1">
-                  <h3 className="text-stellar-blue text-xl font-semibold">
-                    {selectedExperience.company}
-                  </h3>
-                  <p className="text-nebula-mint/80 text-lg">
-                    {selectedExperience.title}
-                  </p>
-                  {selectedExperience.period && (
-                    <p className="text-nebula-mint/60 text-sm">
-                      📅 {selectedExperience.period}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-2">
-              <h4 className="text-lg font-semibold text-nebula-mint">
-                Description
-              </h4>
-              <p className="text-nebula-mint/80 leading-relaxed text-lg">
-                {selectedExperience.longDescription ||
-                  selectedExperience.shortDescription}
-              </p>
-            </div>
-
-            {/* Technologies */}
-            {(selectedExperience.technologies || []).length > 0 && (
-              <div className="space-y-3">
-                <h4 className="text-lg font-semibold text-nebula-mint">
-                  Technologies Used
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedExperience.technologies.map((tech, index) => (
-                    <LabelCard key={index} label={tech} onClick={() => {}} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Links */}
-            {selectedExperience.companyUrl && (
-              <div className="space-y-3">
-                <h4 className="text-lg font-semibold text-nebula-mint">
-                  Links
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  <a
-                    href={selectedExperience.companyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
+        item={selectedExperience}
+        sectionType="experience"
+        header={selectedExperience?.title}
+        subheader={selectedExperience?.company}
+        metadata={[
+          {
+            icon: calendarIcon,
+            value: selectedExperience
+              ? formatDateRange(
+                  selectedExperience.startDate,
+                  selectedExperience.endDate,
+                  selectedExperience.isPresent
+                )
+              : "",
+          },
+          ...(selectedExperience?.location
+            ? [
+                {
+                  icon: locationIcon,
+                  value: selectedExperience.location,
+                },
+              ]
+            : []),
+        ]}
+        description={
+          selectedExperience?.longDescription ||
+          selectedExperience?.shortDescription
+        }
+        content={
+          selectedExperience?.technologies &&
+          (Array.isArray(selectedExperience.technologies)
+            ? selectedExperience.technologies.length > 0
+            : selectedExperience.technologies) && (
+            <div className="space-y-2 mt-2">
+              <h4 className="text-lg font-semibold text-nebula-mint">Skills</h4>
+              <div className="flex flex-wrap gap-2">
+                {(Array.isArray(selectedExperience.technologies)
+                  ? selectedExperience.technologies
+                  : parseEscapedCommaList(selectedExperience.technologies || "")
+                ).map((tech, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
                   >
-                    <img
-                      src={externalLinkIcon}
-                      alt="External Link"
-                      className="w-5 h-5"
-                    />
-                    <span>Company Website</span>
-                  </a>
-                </div>
+                    {tech}
+                  </span>
+                ))}
               </div>
-            )}
-          </div>
-        )}
-      </PopupModal>
+            </div>
+          )
+        }
+        links={
+          selectedExperience?.websiteUrl
+            ? [
+                {
+                  url: selectedExperience.websiteUrl,
+                  label: "Company Website",
+                  icon: externalLinkIcon,
+                  alt: "Company Website",
+                },
+              ]
+            : []
+        }
+      />
     </>
   );
 };

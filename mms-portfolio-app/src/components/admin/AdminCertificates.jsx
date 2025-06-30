@@ -14,6 +14,7 @@ import {
   deleteCertificateImage,
 } from "../../services/certificatesService";
 import Pagination from "./Pagination";
+import { parseEscapedCommaList } from "../../utils/stringUtils";
 
 const AdminCertificates = () => {
   const { data, updateData, addItem, removeItem } = useData();
@@ -191,10 +192,7 @@ const AdminCertificates = () => {
       ...formData,
       image: imageUrl,
       imageFileName: imageFileName,
-      skills: formData.skills
-        .split(",")
-        .map((skill) => skill.trim())
-        .filter((skill) => skill),
+      skills: parseEscapedCommaList(formData.skills || ""),
     };
 
     try {
@@ -522,6 +520,22 @@ const AdminCertificates = () => {
                 />
               </div>
 
+              <div className="mt-2">
+                <p className="text-nebula-mint/60 text-xs mb-1">Preview:</p>
+                <div className="flex flex-wrap gap-2">
+                  {parseEscapedCommaList(formData.skills || "").map(
+                    (skill, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-xs"
+                      >
+                        {skill}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
               <div className="flex space-x-3">
                 <button onClick={handleSave} className="btn-primary">
                   {editingId ? "Update" : "Add"} Certificate
@@ -566,16 +580,19 @@ const AdminCertificates = () => {
                     </p>
                   )}
                   {/* Display skills if available, otherwise show description */}
-                  {(cert.skills || []).length > 0 && (
+                  {cert.skills && cert.skills.length > 0 && (
                     <div className="mt-2">
-                      <span className="text-nebula-mint/60 text-sm font-semibold mr-2">
+                      <p className="text-nebula-mint/60 text-sm mb-2">
                         Skills:
-                      </span>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {cert.skills.map((skill, index) => (
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {(Array.isArray(cert.skills)
+                          ? cert.skills
+                          : parseEscapedCommaList(cert.skills || "")
+                        ).map((skill, index) => (
                           <span
                             key={index}
-                            className="px-3 py-1 bg-stellar-blue/20 border border-stellar-blue/30 rounded-full text-stellar-blue text-sm"
+                            className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
                           >
                             {skill}
                           </span>

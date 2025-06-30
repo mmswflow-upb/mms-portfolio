@@ -16,8 +16,9 @@ import githubIcon from "../assets/info/github.png";
 import liveIcon from "../assets/info/pulse.png";
 import SectionWrapper from "./SectionWrapper";
 import StandardCard from "./cards/StandardCard";
-import PopupModal from "./PopupModal";
+import StandardModal from "./StandardModal";
 import LabelCard from "./cards/LabelCard";
+import { parseEscapedCommaList } from "../utils/stringUtils";
 
 const ProjectsSection = () => {
   const { data } = useData();
@@ -113,16 +114,23 @@ const ProjectsSection = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.length > 0 ? (
             filteredProjects.map((project) => {
+              // Parse technologies (handle both arrays and escaped comma strings)
+              const technologies = Array.isArray(project.technologies)
+                ? project.technologies
+                : project.technologies
+                ? parseEscapedCommaList(project.technologies)
+                : [];
+
               // Prepare content for the card
               const content = (
                 <div className="space-y-3">
-                  {(project.technologies || []).length > 0 && (
+                  {technologies.length > 0 && (
                     <div>
                       <span className="text-nebula-mint/60 text-sm font-semibold mr-2">
                         Tech Stack:
                       </span>
                       <div className="flex flex-wrap gap-2 mt-1">
-                        {project.technologies.slice(0, 4).map((tech, index) => (
+                        {technologies.slice(0, 4).map((tech, index) => (
                           <span
                             key={index}
                             className="px-3 py-1 bg-stellar-blue/20 border border-stellar-blue/30 rounded-full text-stellar-blue text-sm group-hover:bg-stellar-blue/30 group-hover:border-stellar-blue/50 transition-all duration-300"
@@ -130,9 +138,9 @@ const ProjectsSection = () => {
                             {tech}
                           </span>
                         ))}
-                        {project.technologies.length > 4 && (
+                        {technologies.length > 4 && (
                           <span className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-full text-nebula-mint/60 text-sm">
-                            +{project.technologies.length - 4} more
+                            +{technologies.length - 4} more
                           </span>
                         )}
                       </div>
@@ -249,171 +257,116 @@ const ProjectsSection = () => {
         </div>
       </SectionWrapper>
 
-      <PopupModal
+      <StandardModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={selectedProject?.title}
-      >
-        {selectedProject && (
-          <div className="space-y-6">
-            {/* Header Information */}
-            <div className="space-y-4">
-              <div className="flex items-start space-x-4">
-                {selectedProject.image && (
-                  <img
-                    src={selectedProject.image}
-                    alt={selectedProject.title}
-                    className="w-20 h-20 object-cover rounded-lg border border-cosmic-purple/30 flex-shrink-0"
-                  />
-                )}
-                <div className="flex-1">
-                  <h3 className="text-stellar-blue text-xl font-semibold">
-                    {selectedProject.title}
-                  </h3>
-                  {(selectedProject.role || selectedProject.teamType) && (
-                    <div className="flex items-center gap-3 mt-2">
-                      {selectedProject.role && (
-                        <p className="text-nebula-mint/80 text-sm">
-                          {selectedProject.role}
-                        </p>
-                      )}
-                      {selectedProject.teamType && (
-                        <span className="px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 bg-stellar-blue/20 border border-stellar-blue/30 text-stellar-blue">
-                          {selectedProject.teamType === "team" ? (
-                            <img
-                              src={teamIcon}
-                              alt="Team"
-                              className="h-3 w-3 object-contain logo-nebula-mint"
-                            />
-                          ) : (
-                            <img
-                              src={personIcon}
-                              alt="Individual"
-                              className="h-3 w-3 object-contain logo-nebula-mint"
-                            />
-                          )}
-                          {selectedProject.teamType === "team"
-                            ? "Team Project"
-                            : "Individual"}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-2">
+        item={selectedProject}
+        sectionType="project"
+        header={selectedProject?.title}
+        subheader={selectedProject?.role}
+        metadata={[
+          ...(selectedProject?.teamType
+            ? [
+                {
+                  icon:
+                    selectedProject.teamType === "team" ? teamIcon : personIcon,
+                  value:
+                    selectedProject.teamType === "team"
+                      ? "Team Project"
+                      : "Individual",
+                },
+              ]
+            : []),
+        ]}
+        description={
+          selectedProject?.longDescription || selectedProject?.shortDescription
+        }
+        content={
+          selectedProject?.technologies &&
+          (Array.isArray(selectedProject.technologies)
+            ? selectedProject.technologies.length > 0
+            : selectedProject.technologies) && (
+            <div className="space-y-2 mt-2">
               <h4 className="text-lg font-semibold text-nebula-mint">
-                Description
+                Technologies Used
               </h4>
-              <p className="text-nebula-mint/80 leading-relaxed text-lg">
-                {selectedProject.longDescription ||
-                  selectedProject.shortDescription}
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {(Array.isArray(selectedProject.technologies)
+                  ? selectedProject.technologies
+                  : parseEscapedCommaList(selectedProject.technologies || "")
+                ).map((tech, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
+          )
+        }
+        links={[
+          ...(selectedProject?.githubUrl
+            ? [
+                {
+                  url: selectedProject.githubUrl,
+                  label: "GitHub Repository",
+                  icon: githubIcon,
+                  alt: "GitHub",
+                },
+              ]
+            : []),
+          ...(selectedProject?.liveUrl
+            ? [
+                {
+                  url: selectedProject.liveUrl,
+                  label: "Live Demo",
+                  icon: liveIcon,
+                  alt: "Live Demo",
+                },
+              ]
+            : []),
+          ...(selectedProject?.socialMedia
+            ? selectedProject.socialMedia.map((social) => {
+                const getSocialIcon = (platform) => {
+                  switch (platform) {
+                    case "twitter":
+                      return twitterIcon;
+                    case "instagram":
+                      return instagramIcon;
+                    case "youtube":
+                      return youtubeIcon;
+                    default:
+                      return liveIcon;
+                  }
+                };
 
-            {/* Technologies */}
-            {(selectedProject.technologies || []).length > 0 && (
-              <div className="space-y-3">
-                <h4 className="text-lg font-semibold text-nebula-mint">
-                  Technologies Used
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedProject.technologies.map((tech, index) => (
-                    <LabelCard key={index} label={tech} onClick={() => {}} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Links */}
-            {(selectedProject.githubUrl ||
-              selectedProject.liveUrl ||
-              (selectedProject.socialMedia &&
-                selectedProject.socialMedia.length > 0)) && (
-              <div className="space-y-3">
-                <h4 className="text-lg font-semibold text-nebula-mint">
-                  Links
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  {selectedProject.githubUrl && (
-                    <a
-                      href={selectedProject.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
-                    >
-                      <img src={githubIcon} alt="GitHub" className="w-5 h-5" />
-                      <span>GitHub Repository</span>
-                    </a>
-                  )}
-                  {selectedProject.liveUrl && (
-                    <a
-                      href={selectedProject.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
-                    >
-                      <img src={liveIcon} alt="Live Demo" className="w-5 h-5" />
-                      <span>Live Demo</span>
-                    </a>
-                  )}
-                  {selectedProject.socialMedia &&
-                    selectedProject.socialMedia.map((social, index) => {
-                      const getSocialIcon = (platform) => {
-                        switch (platform) {
-                          case "twitter":
-                            return twitterIcon;
-                          case "instagram":
-                            return instagramIcon;
-                          case "youtube":
-                            return youtubeIcon;
-                          default:
-                            return liveIcon;
-                        }
-                      };
-
-                      const getSocialLabel = (platform) => {
-                        switch (platform) {
-                          case "twitter":
-                            return "Twitter";
-                          case "instagram":
-                            return "Instagram";
-                          case "youtube":
-                            return "YouTube";
-                          default:
-                            return (
-                              platform.charAt(0).toUpperCase() +
-                              platform.slice(1)
-                            );
-                        }
-                      };
-
+                const getSocialLabel = (platform) => {
+                  switch (platform) {
+                    case "twitter":
+                      return "Twitter";
+                    case "instagram":
+                      return "Instagram";
+                    case "youtube":
+                      return "YouTube";
+                    default:
                       return (
-                        <a
-                          key={index}
-                          href={social.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center space-x-2 text-stellar-blue hover:text-nebula-mint transition-colors"
-                        >
-                          <img
-                            src={getSocialIcon(social.platform)}
-                            alt={getSocialLabel(social.platform)}
-                            className="w-5 h-5 object-contain logo-nebula-mint"
-                          />
-                          <span>{getSocialLabel(social.platform)}</span>
-                        </a>
+                        platform.charAt(0).toUpperCase() + platform.slice(1)
                       );
-                    })}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </PopupModal>
+                  }
+                };
+
+                return {
+                  url: social.url,
+                  label: getSocialLabel(social.platform),
+                  icon: getSocialIcon(social.platform),
+                  alt: getSocialLabel(social.platform),
+                };
+              })
+            : []),
+        ]}
+      />
     </>
   );
 };

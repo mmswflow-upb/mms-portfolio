@@ -19,6 +19,7 @@ import {
   deleteProjectImage,
 } from "../../services/projectsService";
 import Pagination from "./Pagination";
+import { parseEscapedCommaList } from "../../utils/stringUtils";
 
 const AdminProjects = () => {
   const { data, updateData, addItem, removeItem } = useData();
@@ -211,10 +212,7 @@ const AdminProjects = () => {
       ...formData,
       image: imageUrl,
       imageFileName: imageFileName,
-      technologies: formData.technologies
-        .split(",")
-        .map((tech) => tech.trim())
-        .filter((tech) => tech),
+      technologies: parseEscapedCommaList(formData.technologies || ""),
     };
 
     try {
@@ -732,6 +730,22 @@ const AdminProjects = () => {
                 </div>
               </div>
 
+              <div className="mt-2">
+                <p className="text-nebula-mint/60 text-xs mb-1">Preview:</p>
+                <div className="flex flex-wrap gap-2">
+                  {parseEscapedCommaList(formData.technologies || "").map(
+                    (tech, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-xs"
+                      >
+                        {tech}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
               <div className="flex space-x-3">
                 <button onClick={handleSave} className="btn-primary">
                   {editingId ? "Update" : "Add"} Project
@@ -814,13 +828,16 @@ const AdminProjects = () => {
                       {project.longDescription}
                     </p>
                   )}
-                  {(project.technologies || []).length > 0 && (
+                  {project.technologies && project.technologies.length > 0 && (
                     <div className="mt-2">
-                      <span className="text-nebula-mint/60 text-sm font-semibold mr-2">
-                        Tech Stack:
-                      </span>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {(project.technologies || []).map((tech, index) => (
+                      <p className="text-nebula-mint/60 text-sm mb-2">
+                        Technologies:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {(Array.isArray(project.technologies)
+                          ? project.technologies
+                          : parseEscapedCommaList(project.technologies || "")
+                        ).map((tech, index) => (
                           <span
                             key={index}
                             className="px-3 py-1 bg-cosmic-purple/20 border border-cosmic-purple/30 rounded-lg text-nebula-mint text-sm"
