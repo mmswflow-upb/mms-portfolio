@@ -84,12 +84,12 @@ const ProjectsSection = () => {
         showArrow={false}
       >
         {/* Category Navigation */}
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-all duration-300 ${
+              className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 rounded-lg border transition-all duration-300 text-sm sm:text-base ${
                 selectedCategory === category
                   ? "bg-stellar-blue/20 border-stellar-blue/50 text-stellar-blue"
                   : "bg-cosmic-purple/20 border-cosmic-purple/30 text-nebula-mint hover:bg-cosmic-purple/30 hover:border-cosmic-purple/50"
@@ -98,11 +98,11 @@ const ProjectsSection = () => {
               <img
                 src={getCategoryIcon(category)}
                 alt={category}
-                className="h-4 w-4 object-contain logo-nebula-mint"
+                className="h-3 w-3 sm:h-4 sm:w-4 object-contain logo-nebula-mint"
               />
               <span className="font-medium">{category}</span>
               {selectedCategory === category && (
-                <span className="text-xs bg-stellar-blue/30 px-2 py-1 rounded-full">
+                <span className="text-xs bg-stellar-blue/30 px-1 sm:px-2 py-1 rounded-full">
                   {filteredProjects.length}
                 </span>
               )}
@@ -111,7 +111,7 @@ const ProjectsSection = () => {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredProjects.length > 0 ? (
             filteredProjects.map((project) => {
               // Parse technologies (handle both arrays and escaped comma strings)

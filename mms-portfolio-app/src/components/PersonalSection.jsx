@@ -39,7 +39,7 @@ const PersonalSection = () => {
         id="personal"
         className="min-h-screen flex flex-col justify-center relative"
       >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
           <div className="text-center">
             <p className="text-nebula-mint/60">
               Loading personal information...
@@ -70,8 +70,8 @@ const PersonalSection = () => {
       id="personal"
       className="min-h-screen flex flex-col justify-center relative"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Left side - Personal Info */}
           <div className="space-y-6">
             {/* Profile Photo - Mobile First */}
@@ -110,25 +110,23 @@ const PersonalSection = () => {
               />
             </div>
 
-            <div className="flex items-center space-x-4">
-              <span className="text-nebula-mint/60">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <span className="text-nebula-mint/60 text-sm sm:text-base">
                 📍 {personal.location || "Location"}
               </span>
-              <span className="text-nebula-mint/60">
+              <span className="text-nebula-mint/60 text-sm sm:text-base">
                 🚀 {personal.passion || "Building the future"}
               </span>
             </div>
           </div>
 
-          {/* Right side - Profile Photo (Desktop) and Code Sample */}
+          {/* Right side - Code Sample */}
           <div className="space-y-6">
             {/* GitHub-style commit/info card */}
             <div className="w-full bg-deep-space border border-cosmic-purple/30 rounded-xl p-4 flex items-center gap-4 shadow-md mb-4">
-              <img
-                src={personal.photo}
-                alt={personal.preferredName || personal.name || "Profile"}
-                className="w-24 h-24 rounded-full object-cover border-2 border-cosmic-purple/40 shadow"
-              />
+              <div className="w-24 h-24 rounded-full bg-stellar-blue/20 border-2 border-cosmic-purple/40 shadow flex items-center justify-center">
+                <span className="text-2xl">👨‍💻</span>
+              </div>
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-semibold text-nebula-mint">

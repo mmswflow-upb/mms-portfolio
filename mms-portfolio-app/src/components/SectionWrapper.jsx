@@ -15,7 +15,7 @@ const SectionWrapper = ({
   return (
     <section
       id={id}
-      className={`min-h-screen flex flex-col justify-start pt-16 sm:pt-20 relative ${backgroundClass} ${className}`}
+      className={`py-16 sm:py-20 md:py-24 relative ${backgroundClass} ${className}`}
     >
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
         {/* Section Header - Outside the card */}
