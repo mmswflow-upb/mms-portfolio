@@ -68,7 +68,7 @@ const StandardModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-deep-space/80 backdrop-blur-sm"
@@ -77,18 +77,20 @@ const StandardModal = ({
 
       {/* Modal */}
       <div
-        className={`relative bg-deep-space border border-cosmic-purple/30 rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto ${className}`}
+        className={`relative bg-deep-space border border-cosmic-purple/30 rounded-xl p-4 sm:p-6 max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto ${className}`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-nebula-mint">{header}</h2>
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-nebula-mint">
+            {header}
+          </h2>
 
           <button
             onClick={onClose}
-            className="text-nebula-mint/60 hover:text-nebula-mint transition-colors duration-300"
+            className="text-nebula-mint/60 hover:text-nebula-mint transition-colors duration-300 p-1"
           >
             <svg
-              className="w-6 h-6"
+              className="w-5 h-5 sm:w-6 sm:h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -104,20 +106,22 @@ const StandardModal = ({
         </div>
 
         {/* Content */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Header Information */}
           <div className="space-y-4">
-            <div className="flex items-start space-x-4">
+            <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
               {showImage && item?.image && (
-                <img
-                  src={item.image}
-                  alt={header}
-                  className={`${imageSize} object-cover rounded-lg border border-cosmic-purple/30 flex-shrink-0`}
-                />
+                <div className="flex justify-center sm:justify-start">
+                  <img
+                    src={item.image}
+                    alt={header}
+                    className={`${imageSize} object-cover rounded-lg border border-cosmic-purple/30 flex-shrink-0`}
+                  />
+                </div>
               )}
               <div className="flex-1">
                 {subheader && (
-                  <h3 className="text-stellar-blue text-xl font-semibold">
+                  <h3 className="text-stellar-blue text-lg sm:text-xl font-semibold text-center sm:text-left">
                     {subheader}
                   </h3>
                 )}
@@ -128,7 +132,7 @@ const StandardModal = ({
                     {metadata.map((meta, index) => (
                       <p
                         key={index}
-                        className="text-nebula-mint/60 text-sm flex items-center gap-1"
+                        className="text-nebula-mint/60 text-xs sm:text-sm flex items-center gap-1 justify-center sm:justify-start"
                       >
                         {meta.icon && (
                           <img

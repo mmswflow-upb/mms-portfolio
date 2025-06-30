@@ -65,7 +65,7 @@ const Admin = () => {
 
   return (
     <PageLayout isEditMode={true}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 pt-20 sm:pt-24">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold gradient-text">Admin Panel</h1>
@@ -78,7 +78,7 @@ const Admin = () => {
             <button
               key={section.id}
               onClick={() => setActiveSection(section.id)}
-              className={`px-4 py-2 rounded-lg border transition-colors flex items-center ${
+              className={`px-3 sm:px-4 py-2 rounded-lg border transition-colors flex items-center text-xs sm:text-sm ${
                 activeSection === section.id
                   ? "bg-stellar-blue border-stellar-blue text-white"
                   : "bg-cosmic-purple/20 border-cosmic-purple/30 text-nebula-mint hover:bg-cosmic-purple/30"
@@ -87,9 +87,14 @@ const Admin = () => {
               <img
                 src={section.icon}
                 alt={section.name}
-                className="h-5 w-5 object-contain mr-2 logo-nebula-mint"
+                className="h-4 w-4 sm:h-5 sm:w-5 object-contain mr-1 sm:mr-2 logo-nebula-mint"
               />
-              {section.name}
+              <span className="hidden sm:inline">{section.name}</span>
+              <span className="sm:hidden">
+                {section.name.length > 8
+                  ? section.name.substring(0, 8) + "..."
+                  : section.name}
+              </span>
             </button>
           ))}
         </div>

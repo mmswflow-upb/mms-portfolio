@@ -421,7 +421,7 @@ const AdminProjects = () => {
                       }
                     }}
                   >
-                    <div className="flex items-center justify-center space-x-3">
+                    <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-3">
                       <label className="btn-secondary cursor-pointer flex items-center space-x-2">
                         <img
                           src={uploadIcon}
@@ -437,8 +437,10 @@ const AdminProjects = () => {
                           ref={fileInputRef}
                         />
                       </label>
-                      <span className="text-nebula-mint/60 text-sm">or</span>
-                      <span className="text-nebula-mint/40 text-sm">
+                      <span className="text-nebula-mint/60 text-sm hidden sm:inline">
+                        or
+                      </span>
+                      <span className="text-nebula-mint/40 text-xs sm:text-sm text-center">
                         Paste (Ctrl+V) / Drag & Drop
                       </span>
                       {formData.image && (
@@ -471,7 +473,7 @@ const AdminProjects = () => {
               </div>
 
               {/* Project Information */}
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-nebula-mint text-sm font-medium mb-2">
                     Project Title
