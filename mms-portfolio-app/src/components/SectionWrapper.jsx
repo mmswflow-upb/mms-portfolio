@@ -15,21 +15,21 @@ const SectionWrapper = ({
   return (
     <section
       id={id}
-      className={`py-16 sm:py-20 md:py-24 relative ${backgroundClass} ${className}`}
+      className={`min-h-screen flex flex-col justify-start pt-20 relative ${backgroundClass} ${className}`}
     >
-      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header - Outside the card */}
-        <div className="text-center mb-8 sm:mb-12 md:mb-16">
-          <div className="flex items-center justify-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center space-x-3 mb-4">
             <div className="text-nebula-mint [&>img]:logo-nebula-mint">
               {icon}
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-nebula-mint">
+            <h2 className="text-3xl md:text-4xl font-bold text-nebula-mint">
               {title}
             </h2>
           </div>
           {description && (
-            <p className="text-nebula-mint/80 max-w-2xl mx-auto text-base sm:text-lg px-2">
+            <p className="text-nebula-mint/80 max-w-2xl mx-auto text-lg">
               {description}
             </p>
           )}

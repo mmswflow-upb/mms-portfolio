@@ -74,10 +74,10 @@ const StandardCard = ({
       className={`cursor-pointer group transition-all duration-300 hover:scale-105 ${className}`}
     >
       <div className="card hover:bg-cosmic-purple/20 hover:border-cosmic-purple/50 transition-all duration-300">
-        <div className="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
+        <div className="flex items-start space-x-4">
           {/* Image Section */}
           {showImage && (
-            <div className="flex-shrink-0 flex justify-center sm:justify-start">
+            <div className="flex-shrink-0">
               <div className={`${imageSize} rounded-lg overflow-hidden`}>
                 {imageUrl ? (
                   <img
@@ -103,13 +103,13 @@ const StandardCard = ({
           <div className="flex-1 space-y-3">
             {/* Header Section */}
             <div>
-              <h3 className="text-lg sm:text-xl font-bold text-nebula-mint group-hover:text-stellar-blue transition-colors duration-300">
+              <h3 className="text-xl font-bold text-nebula-mint group-hover:text-stellar-blue transition-colors duration-300">
                 {header}
               </h3>
               {(subheader || subheaderExtra) && (
-                <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 flex-wrap">
+                <div className="flex items-start gap-3 flex-wrap">
                   {subheader && (
-                    <p className="text-stellar-blue text-base sm:text-lg font-semibold flex-1 min-w-0">
+                    <p className="text-stellar-blue text-lg font-semibold flex-1 min-w-0">
                       {subheader}
                     </p>
                   )}
@@ -132,27 +132,22 @@ const StandardCard = ({
 
             {/* Links Section */}
             {links.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {links.map((link, index) => (
                   <a
                     key={index}
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-stellar-blue hover:text-nebula-mint text-xs sm:text-sm flex items-center gap-1 transition-colors duration-300 px-2 py-1 rounded hover:bg-cosmic-purple/20"
+                    className="text-stellar-blue hover:text-nebula-mint text-sm flex items-center gap-1 transition-colors duration-300"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <img
                       src={link.icon}
                       alt={link.alt}
-                      className="h-3 w-3 sm:h-4 sm:w-4 object-contain logo-nebula-mint"
+                      className="h-4 w-4 object-contain logo-nebula-mint"
                     />
-                    <span className="hidden sm:inline">{link.label}</span>
-                    <span className="sm:hidden">
-                      {link.label.length > 10
-                        ? link.label.substring(0, 10) + "..."
-                        : link.label}
-                    </span>
+                    {link.label}
                   </a>
                 ))}
               </div>

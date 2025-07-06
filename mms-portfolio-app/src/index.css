@@ -11,8 +11,6 @@
     /* Ensure body starts at the top */
     margin-top: 0;
     padding-top: 0;
-    /* Improve touch scrolling on mobile */
-    -webkit-overflow-scrolling: touch;
   }
 
   html {
@@ -27,25 +25,6 @@
   /* Add scroll margin for all sections to account for navbar */
   section[id] {
     scroll-margin-top: 84px; /* navbar height (64px) + 20px padding */
-  }
-
-  /* Mobile-specific improvements */
-  @media (max-width: 640px) {
-    /* Improve touch targets */
-    button, a {
-      min-height: 44px;
-      min-width: 44px;
-    }
-    
-    /* Better text readability on mobile */
-    p {
-      line-height: 1.6;
-    }
-    
-    /* Improve form inputs on mobile */
-    input, textarea, select {
-      font-size: 16px; /* Prevents zoom on iOS */
-    }
   }
 
   /* Prevent scrolling above the personal section */
