@@ -25,6 +25,9 @@
   /* Add scroll margin for all sections to account for navbar */
   section[id] {
     scroll-margin-top: 84px; /* navbar height (64px) + 20px padding */
+    /* Prepare for animations - these will be overridden by JavaScript */
+    transform-origin: center center;
+    will-change: transform, opacity, filter;
   }
 
   /* Prevent scrolling above the personal section */
@@ -35,13 +38,13 @@
     padding-top: 0;
   }
 
-  /* Ensure the page starts at the top */
-  #root {
-    margin-top: 0;
-    padding-top: 0;
+  /* Improved focus states for better accessibility during animations */
+  section[id]:focus-visible {
+    outline: 2px solid #B6EADA;
+    outline-offset: 4px;
   }
 
-  /* Completely hide scrollbar but keep scrolling functionality */
+  /* Hide scrollbar completely */
   ::-webkit-scrollbar {
     width: 0px;
     display: none;
@@ -57,6 +60,12 @@
 
   ::-webkit-scrollbar-thumb:hover {
     display: none;
+  }
+
+  /* Ensure the page starts at the top */
+  #root {
+    margin-top: 0;
+    padding-top: 0;
   }
 
   /* Hide scrollbar arrows - more specific selectors */
