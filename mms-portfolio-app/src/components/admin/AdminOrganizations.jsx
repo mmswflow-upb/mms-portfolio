@@ -783,20 +783,24 @@ const AdminOrganizations = () => {
                     {formatDateRange(org.startDate, org.endDate)}
                   </p>
                   {org.shortDescription && (
-                    <p className="text-nebula-mint/80 mt-2">
+                    <div className="text-nebula-mint/80 mt-2">
                       <span className="font-semibold text-stellar-blue">
                         Short:
                       </span>{" "}
-                      {org.shortDescription}
-                    </p>
+                      <pre className="whitespace-pre-wrap font-sans inline">
+                        {org.shortDescription}
+                      </pre>
+                    </div>
                   )}
                   {org.longDescription && (
-                    <p className="text-nebula-mint/80 mt-1">
+                    <div className="text-nebula-mint/80 mt-1">
                       <span className="font-semibold text-stellar-blue">
                         Long:
                       </span>{" "}
-                      {org.longDescription}
-                    </p>
+                      <pre className="whitespace-pre-wrap font-sans inline">
+                        {org.longDescription}
+                      </pre>
+                    </div>
                   )}
                   {org.websiteUrl && (
                     <div className="flex gap-2 mt-2">

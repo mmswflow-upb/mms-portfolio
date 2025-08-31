@@ -122,9 +122,9 @@ const StandardCard = ({
 
             {/* Short Description */}
             {shortDescription && (
-              <p className="text-stellar-blue text-sm font-semibold flex-1 min-w-0">
+              <pre className="text-stellar-blue text-sm font-semibold flex-1 min-w-0 whitespace-pre-wrap font-sans">
                 {shortDescription}
-              </p>
+              </pre>
             )}
 
             {/* Content Section */}

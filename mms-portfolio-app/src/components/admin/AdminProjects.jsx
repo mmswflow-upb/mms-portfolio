@@ -817,16 +817,18 @@ const AdminProjects = () => {
                       {project.category}
                     </span>
                   </div>
-                  <p className="text-nebula-mint/80 mt-2">
+                  <pre className="text-nebula-mint/80 mt-2 whitespace-pre-wrap font-sans">
                     {project.shortDescription}
-                  </p>
+                  </pre>
                   {project.longDescription && (
-                    <p className="text-nebula-mint/80 mt-1">
+                    <div className="text-nebula-mint/80 mt-1">
                       <span className="font-semibold text-stellar-blue">
                         Long:
                       </span>{" "}
-                      {project.longDescription}
-                    </p>
+                      <pre className="whitespace-pre-wrap font-sans inline">
+                        {project.longDescription}
+                      </pre>
+                    </div>
                   )}
                   {project.technologies && project.technologies.length > 0 && (
                     <div className="mt-2">

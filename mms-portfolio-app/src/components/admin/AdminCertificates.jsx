@@ -601,20 +601,24 @@ const AdminCertificates = () => {
                     </div>
                   )}
                   {cert.shortDescription && (
-                    <p className="text-nebula-mint/80 mt-2">
+                    <div className="text-nebula-mint/80 mt-2">
                       <span className="font-semibold text-stellar-blue">
                         Short:
                       </span>{" "}
-                      {cert.shortDescription}
-                    </p>
+                      <pre className="whitespace-pre-wrap font-sans inline">
+                        {cert.shortDescription}
+                      </pre>
+                    </div>
                   )}
                   {cert.longDescription && (
-                    <p className="text-nebula-mint/80 mt-1">
+                    <div className="text-nebula-mint/80 mt-1">
                       <span className="font-semibold text-stellar-blue">
                         Long:
                       </span>{" "}
-                      {cert.longDescription}
-                    </p>
+                      <pre className="whitespace-pre-wrap font-sans inline">
+                        {cert.longDescription}
+                      </pre>
+                    </div>
                   )}
                   {cert.credentialUrl && (
                     <a

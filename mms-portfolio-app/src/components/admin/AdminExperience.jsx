@@ -663,20 +663,24 @@ const AdminExperience = () => {
                     {formatDateRange(exp.startDate, exp.endDate)}
                   </p>
                   {exp.shortDescription && (
-                    <p className="text-nebula-mint/80 mt-2">
+                    <div className="text-nebula-mint/80 mt-2">
                       <span className="font-semibold text-stellar-blue">
                         Short:
                       </span>{" "}
-                      {exp.shortDescription}
-                    </p>
+                      <pre className="whitespace-pre-wrap font-sans inline">
+                        {exp.shortDescription}
+                      </pre>
+                    </div>
                   )}
                   {exp.longDescription && (
-                    <p className="text-nebula-mint/80 mt-1">
+                    <div className="text-nebula-mint/80 mt-1">
                       <span className="font-semibold text-stellar-blue">
                         Long:
                       </span>{" "}
-                      {exp.longDescription}
-                    </p>
+                      <pre className="whitespace-pre-wrap font-sans inline">
+                        {exp.longDescription}
+                      </pre>
+                    </div>
                   )}
                   {exp.technologies && exp.technologies.length > 0 && (
                     <div className="mt-2">

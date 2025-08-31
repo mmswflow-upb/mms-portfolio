@@ -153,9 +153,9 @@ const StandardModal = ({
               <h4 className="text-lg font-semibold text-nebula-mint">
                 Description
               </h4>
-              <p className="text-nebula-mint/80 leading-relaxed text-lg">
+              <pre className="text-nebula-mint/80 leading-relaxed text-lg whitespace-pre-wrap font-sans">
                 {description}
-              </p>
+              </pre>
             </div>
           )}
 

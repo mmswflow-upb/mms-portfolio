@@ -829,16 +829,18 @@ const AdminEducation = () => {
                       Avg Grade: {edu.gpa}
                     </p>
                   )}
-                  <p className="text-nebula-mint/80 mt-2">
+                  <pre className="text-nebula-mint/80 mt-2 whitespace-pre-wrap font-sans">
                     {edu.shortDescription}
-                  </p>
+                  </pre>
                   {edu.longDescription && (
-                    <p className="text-nebula-mint/80 mt-1">
+                    <div className="text-nebula-mint/80 mt-1">
                       <span className="font-semibold text-stellar-blue">
                         Long:
                       </span>{" "}
-                      {edu.longDescription}
-                    </p>
+                      <pre className="whitespace-pre-wrap font-sans inline">
+                        {edu.longDescription}
+                      </pre>
+                    </div>
                   )}
                   {edu.subjects && edu.subjects.length > 0 && (
                     <div className="mt-2">

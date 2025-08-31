@@ -97,10 +97,10 @@ const PersonalSection = () => {
                   {personal.preferredName || personal.name || "Developer"}
                 </span>
               </h1>
-              <p className="text-lg text-nebula-mint/80 max-w-lg">
+              <pre className="text-lg text-nebula-mint/80 max-w-lg whitespace-pre-wrap font-sans">
                 {personal.description ||
                   "Full-stack developer passionate about creating innovative solutions."}
-              </p>
+              </pre>
             </div>
 
             <div className="flex flex-wrap gap-3">

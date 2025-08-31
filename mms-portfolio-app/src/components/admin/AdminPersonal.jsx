@@ -623,9 +623,9 @@ const AdminPersonal = () => {
               {/* Welcome Message */}
               <div>
                 <p className="text-nebula-mint/60 text-sm">Welcome Message</p>
-                <p className="text-nebula-mint/80 mt-1">
+                <pre className="text-nebula-mint/80 mt-1 whitespace-pre-wrap font-sans">
                   {personal.welcomeMessage || "Not set"}
-                </p>
+                </pre>
               </div>
 
               {/* Repository Path */}
@@ -641,9 +641,9 @@ const AdminPersonal = () => {
               {/* Description */}
               <div>
                 <p className="text-nebula-mint/60 text-sm">Description</p>
-                <p className="text-nebula-mint/80 mt-1">
+                <pre className="text-nebula-mint/80 mt-1 whitespace-pre-wrap font-sans">
                   {personal.description || "Not set"}
-                </p>
+                </pre>
               </div>
 
               {/* Code Sample */}
