@@ -9,6 +9,7 @@ import StandardCard from "./cards/StandardCard";
 import StandardModal from "./StandardModal";
 import LabelCard from "./cards/LabelCard";
 import { parseEscapedCommaList } from "../utils/stringUtils";
+import { calculateShortPeriod } from "../utils/periodUtils";
 
 const ExperienceSection = () => {
   const { data } = useData();
@@ -50,6 +51,11 @@ const ExperienceSection = () => {
     return `${start} - ${end}`;
   };
 
+  // Helper function to calculate period
+  const getPeriod = (startDate, endDate) => {
+    return calculateShortPeriod(startDate, endDate);
+  };
+
   return (
     <>
       <SectionWrapper
@@ -71,7 +77,8 @@ const ExperienceSection = () => {
                     alt="Period"
                     className="h-3 w-3 object-contain logo-nebula-mint"
                   />
-                  {formatDateRange(exp.startDate, exp.endDate, exp.isPresent)}
+                  {formatDateRange(exp.startDate, exp.endDate, exp.isPresent)} •{" "}
+                  {getPeriod(exp.startDate, exp.endDate)}
                 </p>
                 {exp.location && (
                   <p className="text-nebula-mint/60 text-sm flex items-center gap-1">
@@ -126,11 +133,14 @@ const ExperienceSection = () => {
           {
             icon: calendarIcon,
             value: selectedExperience
-              ? formatDateRange(
+              ? `${formatDateRange(
                   selectedExperience.startDate,
                   selectedExperience.endDate,
                   selectedExperience.isPresent
-                )
+                )} • ${getPeriod(
+                  selectedExperience.startDate,
+                  selectedExperience.endDate
+                )}`
               : "",
           },
           ...(selectedExperience?.location

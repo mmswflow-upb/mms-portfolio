@@ -11,6 +11,7 @@ import PopupModal from "../PopupModal";
 import Pagination from "./Pagination";
 import { uploadJobImage, deleteJobImage } from "../../services/jobsService";
 import { parseEscapedCommaList } from "../../utils/stringUtils";
+import { calculateShortPeriod } from "../../utils/periodUtils";
 
 const AdminExperience = () => {
   const { data, updateData, addItem, removeItem } = useData();
@@ -560,6 +561,20 @@ const AdminExperience = () => {
                   I currently work here
                 </label>
               </div>
+              {/* Computed Period Display */}
+              {(formData.startDate || formData.endDate) && (
+                <div className="bg-cosmic-purple/10 border border-cosmic-purple/20 rounded-lg p-3">
+                  <p className="text-nebula-mint/80 text-sm font-medium mb-1">
+                    Computed Period:
+                  </p>
+                  <p className="text-stellar-blue text-sm">
+                    {calculateShortPeriod(
+                      formData.startDate,
+                      formData.isPresent ? "Present" : formData.endDate
+                    )}
+                  </p>
+                </div>
+              )}
               {/* Description - Enhanced Textarea */}
               <div>
                 <label className="block text-nebula-mint text-sm font-medium mb-2">
@@ -660,7 +675,8 @@ const AdminExperience = () => {
                     </p>
                   )}
                   <p className="text-nebula-mint/60">
-                    {formatDateRange(exp.startDate, exp.endDate)}
+                    {formatDateRange(exp.startDate, exp.endDate)} •{" "}
+                    {calculateShortPeriod(exp.startDate, exp.endDate)}
                   </p>
                   {exp.shortDescription && (
                     <div className="text-nebula-mint/80 mt-2">

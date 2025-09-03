@@ -12,6 +12,7 @@ import SectionWrapper from "./SectionWrapper";
 import StandardCard from "./cards/StandardCard";
 import StandardModal from "./StandardModal";
 import { parseEscapedCommaList } from "../utils/stringUtils";
+import { calculateShortPeriod } from "../utils/periodUtils";
 
 const OrganizationsSection = () => {
   const { data } = useData();
@@ -35,6 +36,11 @@ const OrganizationsSection = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedOrganization(null);
+  };
+
+  // Helper function to calculate period
+  const getPeriod = (startDate, endDate) => {
+    return calculateShortPeriod(startDate, endDate);
   };
 
   return (
@@ -74,7 +80,8 @@ const OrganizationsSection = () => {
                       ? `${org.startDate} - ${org.endDate}`
                       : org.startDate
                       ? `${org.startDate} - Present`
-                      : org.endDate}
+                      : org.endDate}{" "}
+                    • {getPeriod(org.startDate, org.endDate)}
                   </p>
                 )}
               </div>
@@ -171,13 +178,17 @@ const OrganizationsSection = () => {
             ? [
                 {
                   icon: calendarIcon,
-                  value:
+                  value: `${
                     selectedOrganization.startDate &&
                     selectedOrganization.endDate
                       ? `${selectedOrganization.startDate} - ${selectedOrganization.endDate}`
                       : selectedOrganization.startDate
                       ? `${selectedOrganization.startDate} - Present`
-                      : selectedOrganization.endDate,
+                      : selectedOrganization.endDate
+                  } • ${getPeriod(
+                    selectedOrganization.startDate,
+                    selectedOrganization.endDate
+                  )}`,
                 },
               ]
             : []),

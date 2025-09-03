@@ -13,7 +13,9 @@
       "id": 1,
       "title": "Senior Full Stack Developer",
       "company": "TechCorp Solutions",
-      "period": "2022 - Present",
+      "startDate": "2022-01",
+      "endDate": "Present",
+      "location": "San Francisco, CA",
       "description": "Lead development of enterprise-scale applications serving 100K+ users. Architected microservices infrastructure and mentored junior developers.",
       "technologies": "React, Node.js, AWS, Docker, C\\, C++",
       "companyUrl": "https://techcorp-solutions.com"
@@ -22,10 +24,23 @@
       "id": 2,
       "title": "Frontend Developer",
       "company": "StartupXYZ",
-      "period": "2020 - 2022",
+      "startDate": "2020-03",
+      "endDate": "2022-01",
+      "location": "San Francisco, CA",
       "description": "Built responsive web applications and improved user experience metrics by 40%. Collaborated with design team to implement pixel-perfect interfaces.",
       "technologies": ["Vue.js", "TypeScript", "Sass"],
       "companyUrl": "https://startupxyz.com"
+    },
+    {
+      "id": 3,
+      "title": "Junior Developer",
+      "company": "WebDev Studio",
+      "startDate": "2019-06",
+      "endDate": "2020-02",
+      "location": "San Francisco, CA",
+      "description": "Developed responsive websites and learned modern web development practices. Collaborated with senior developers on client projects.",
+      "technologies": ["HTML", "CSS", "JavaScript", "jQuery"],
+      "companyUrl": "https://webdevstudio.com"
     }
   ],
   "organizations": [
@@ -34,7 +49,7 @@
       "title": "Open Source Contributor",
       "organization": "GitHub Community",
       "role": "Active Contributor",
-      "startDate": "2020",
+      "startDate": "2020-01",
       "endDate": "Present",
       "location": "Remote",
       "description": "Active contributor to various open source projects with 500+ commits and 50+ pull requests merged.",
@@ -56,7 +71,7 @@
       "title": "Tech Meetup Organizer",
       "organization": "Local Dev Community",
       "role": "Organizer",
-      "startDate": "2021",
+      "startDate": "2021-06",
       "endDate": "Present",
       "location": "San Francisco, CA",
       "description": "Organize monthly meetups for 200+ developers, fostering knowledge sharing and networking.",
@@ -68,6 +83,18 @@
           "url": "https://instagram.com/localdevcommunity"
         }
       ]
+    },
+    {
+      "id": 3,
+      "title": "Code Mentor",
+      "organization": "Programming Bootcamp",
+      "role": "Volunteer Mentor",
+      "startDate": "2019-01",
+      "endDate": "2020-12",
+      "location": "San Francisco, CA",
+      "description": "Volunteered as a programming mentor for beginners, helping them learn coding fundamentals and best practices.",
+      "skills": ["Teaching", "Code Review", "JavaScript", "Python", "Problem Solving"],
+      "websiteUrl": "https://programmingbootcamp.org"
     }
   ],
   "education": [
@@ -75,7 +102,7 @@
       "id": 1,
       "degree": "Bachelor of Computer Science",
       "institution": "University of Technology",
-      "period": "2016 - 2020",
+      "period": "2016-09 - 2020-05",
       "location": "San Francisco, CA",
       "description": "Graduated Magna Cum Laude with focus on Software Engineering and Data Structures.",
       "gpa": "3.8/4.0",
@@ -95,6 +122,17 @@
           "url": "https://youtube.com/universitytech"
         }
       ]
+    },
+    {
+      "id": 2,
+      "degree": "Master of Software Engineering",
+      "institution": "Tech University",
+      "period": "2020-09 - 2022-05",
+      "location": "San Francisco, CA",
+      "description": "Advanced studies in software architecture, distributed systems, and cloud computing.",
+      "gpa": "3.9/4.0",
+      "relevantSubjects": "Software Architecture, Distributed Systems, Cloud Computing, DevOps, Microservices",
+      "websiteUrl": "https://techuniversity.edu"
     }
   ],
   "projects": [

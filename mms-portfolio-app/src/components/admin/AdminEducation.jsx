@@ -17,6 +17,7 @@ import {
 } from "../../services/educationService";
 import Pagination from "./Pagination";
 import { parseEscapedCommaList } from "../../utils/stringUtils";
+import { calculateShortPeriod } from "../../utils/periodUtils";
 
 const AdminEducation = () => {
   const { data, updateData, addItem, removeItem } = useData();
@@ -597,6 +598,21 @@ const AdminEducation = () => {
                 </div>
               </div>
 
+              {/* Computed Period Display */}
+              {(formData.startDate || formData.endDate) && (
+                <div className="bg-cosmic-purple/10 border border-cosmic-purple/20 rounded-lg p-3">
+                  <p className="text-nebula-mint/80 text-sm font-medium mb-1">
+                    Computed Period:
+                  </p>
+                  <p className="text-stellar-blue text-sm">
+                    {calculateShortPeriod(
+                      formData.startDate,
+                      formData.isPresent ? "Present" : formData.endDate
+                    )}
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -822,7 +838,8 @@ const AdminEducation = () => {
                     </p>
                   )}
                   <p className="text-nebula-mint/60">
-                    {formatDateRange(edu.startDate, edu.endDate)}
+                    {formatDateRange(edu.startDate, edu.endDate)} •{" "}
+                    {calculateShortPeriod(edu.startDate, edu.endDate)}
                   </p>
                   {edu.gpa && (
                     <p className="text-nebula-mint/60 text-sm">

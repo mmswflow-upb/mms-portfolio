@@ -14,6 +14,7 @@ import StandardCard from "./cards/StandardCard";
 import StandardModal from "./StandardModal";
 import LabelCard from "./cards/LabelCard";
 import { parseEscapedCommaList } from "../utils/stringUtils";
+import { calculateShortPeriod } from "../utils/periodUtils";
 
 const EducationSection = () => {
   const { data } = useData();
@@ -39,6 +40,11 @@ const EducationSection = () => {
     setSelectedEducation(null);
   };
 
+  // Helper function to calculate period
+  const getPeriod = (startDate, endDate) => {
+    return calculateShortPeriod(startDate, endDate);
+  };
+
   return (
     <>
       <SectionWrapper
@@ -62,7 +68,11 @@ const EducationSection = () => {
                       alt="Period"
                       className="h-3 w-3 object-contain logo-nebula-mint"
                     />
-                    {edu.period}
+                    {edu.period} •{" "}
+                    {getPeriod(
+                      edu.period.split(" - ")[0],
+                      edu.period.split(" - ")[1]
+                    )}
                   </p>
                 )}
                 {edu.department && (
@@ -179,7 +189,10 @@ const EducationSection = () => {
             ? [
                 {
                   icon: calendarIcon,
-                  value: selectedEducation.period,
+                  value: `${selectedEducation.period} • ${getPeriod(
+                    selectedEducation.period.split(" - ")[0],
+                    selectedEducation.period.split(" - ")[1]
+                  )}`,
                 },
               ]
             : []),
